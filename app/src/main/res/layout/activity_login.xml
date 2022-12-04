@@ -18,7 +18,7 @@
         android:layout_marginTop="80dp"/>
 
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/editTextTextUsername"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -47,7 +47,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTextUsername"/>
 
     <androidx.cardview.widget.CardView
         android:layout_width="300dp"
@@ -60,7 +60,9 @@
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPassword">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clickable="true"
+            android:id="@+id/btnLogin">
 
             <TextView
                 android:layout_width="wrap_content"
