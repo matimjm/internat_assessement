@@ -12,6 +12,8 @@ public class MenuActivity extends AppCompatActivity {
     private Button addNewService;
     private Button findService;
 
+    //TODO zrobic tak zeby cofanie w tyl cofalo a nie wywalalo z aplikacji
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
