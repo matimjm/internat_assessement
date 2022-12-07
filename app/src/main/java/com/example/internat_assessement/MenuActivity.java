@@ -12,9 +12,6 @@ public class MenuActivity extends AppCompatActivity {
     private Button addNewService;
     private Button findService;
 
-    //TODO zrobic tak zeby cofanie w tyl cofalo a nie wywalalo z aplikacji
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,14 +24,12 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MenuActivity.this, AddNewServiceActivity.class));
-                finish();
             }
         });
         findService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MenuActivity.this, FindServiceActivity.class));
-                finish();
+                startActivity(new Intent(MenuActivity.this, QueryActivity.class));
             }
         });
     }
