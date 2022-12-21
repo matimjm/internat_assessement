@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">internat_assessement</string>
+    <string-array name="types">
+        <item>type1</item>
+        <item>type2</item>
+        <item>type3</item>
+        <item>type4</item>
+        <item>typ5</item>
+        <item>type6</item>
+        <item>type7</item>
+        <item>type8</item>
+    </string-array>
+    <string-array name="statuses">
+        <item>received</item>
+        <item>in progress</item>
+        <item>ready to pickup</item>
+    </string-array>
 </resources>

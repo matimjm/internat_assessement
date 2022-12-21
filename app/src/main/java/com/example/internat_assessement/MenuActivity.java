@@ -23,13 +23,13 @@ public class MenuActivity extends AppCompatActivity {
         addNewService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MenuActivity.this, AddNewServiceActivity.class));
+                startActivity(new Intent(MenuActivity.this, CustomerAddActivity.class));
             }
         });
         findService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(MenuActivity.this, QueryActivity.class));
+                //startActivity(new Intent(MenuActivity.this, QueryActivity.class));
             }
         });
     }

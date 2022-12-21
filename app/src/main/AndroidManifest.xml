@@ -13,21 +13,35 @@
         android:theme="@style/Theme.Internat_assessement"
         tools:targetApi="31">
         <activity
-            android:name=".QueryActivity"
+            android:name=".DeviceAddActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".FindServiceActivity"
+            android:name=".NewClientActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".AddNewServiceActivity"
+            android:name=".RecurringCustomerActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".CustomerAddActivity"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
+            android:name=".AddPersonActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
