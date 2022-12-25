@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.firebase.firestore.DocumentSnapshot;
-
 import java.util.ArrayList;
 
 public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.MyViewHolder> {
@@ -30,7 +28,7 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
     @Override
     public RecCustomerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View v = LayoutInflater.from(context).inflate(R.layout.item_layout,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.client_item_layout,parent,false);
 
         return new MyViewHolder(v);
     }
@@ -42,7 +40,7 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
 
         holder.email.setText(client.email);
         holder.number.setText(client.number);
-        holder.number.setText(client.clientId);
+        holder.clientId.setText(client.clientId);
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
