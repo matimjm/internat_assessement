@@ -19,11 +19,11 @@
         android:layout_marginTop="80dp"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnAddExistingService"
+        android:id="@+id/btnFindExistingService"
         android:layout_width="200dp"
         android:layout_height="200dp"
         android:backgroundTint="@color/orange"
-        android:text="Existing service"
+        android:text="Find service in device"
         android:textColor="@color/black"
         app:cornerRadius="15dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
@@ -40,7 +40,7 @@
         app:cornerRadius="15dp"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
         app:layout_constraintStart_toStartOf="@+id/guideline2"
-        app:layout_constraintTop_toBottomOf="@+id/btnAddExistingService" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFindExistingService" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline2"

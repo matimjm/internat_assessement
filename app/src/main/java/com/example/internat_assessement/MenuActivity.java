@@ -9,7 +9,7 @@ import android.widget.Button;
 
 public class MenuActivity extends AppCompatActivity {
 
-    private Button addNewService;
+    private Button addService;
     private Button findService;
 
     @Override
@@ -17,10 +17,10 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        addNewService = findViewById(R.id.btnAddService);
+        addService = findViewById(R.id.btnAddService);
         findService = findViewById(R.id.btnFindService);
 
-        addNewService.setOnClickListener(new View.OnClickListener() {
+        addService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(MenuActivity.this, CustomerAddActivity.class));

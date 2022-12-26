@@ -29,10 +29,6 @@ public class ModelAddActivity extends AppCompatActivity {
     Button newModelAdd,noBrand;
     FirebaseFirestore db;
 
-
-    //TODO do a spinner to show a brand and do field other to redirect to add a new brand
-    //TODO after the new model added redirect back to new device activity
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
