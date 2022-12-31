@@ -12,6 +12,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FieldValue;
@@ -41,8 +42,7 @@ public class NewServiceActivity extends AppCompatActivity {
         spinnerStatuses = findViewById(R.id.spinnerStatuses);
         db = FirebaseFirestore.getInstance();
 
-        //TODO do a onclicklistener to get info and save that info to the database with getting the latest document and creating a new serviceId,
-        //TODO add a spinner to do a status (do it first)
+        //TODO do a onclicklistener to get info and save that info to the database with getting the latest document and creating a new serviceId
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -64,13 +64,12 @@ public class NewServiceActivity extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                for (QueryDocumentSnapshot document : task.getResult()) {
-                                    String[] serviceIdList = document.getId().split("_"); // 1_26_12_2022
+                                if (task.getResult().isEmpty()) {
 
                                     LocalDate date = LocalDate.now();
                                     String[] dateList = date.toString().split("-");
 
-                                    int serviceNumber = Integer.parseInt(serviceIdList[0]) + 1;
+                                    int serviceNumber = 1;
                                     String year = dateList[0];
                                     String month = dateList[1];
                                     String day = dateList[2];
@@ -94,9 +93,42 @@ public class NewServiceActivity extends AppCompatActivity {
                                                     startActivity(new Intent(NewServiceActivity.this,MenuActivity.class));
                                                 }
                                             });
+                                }else {
+                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                        String[] serviceIdList = document.getId().split("_"); // 1_26_12_2022
+
+                                        LocalDate date = LocalDate.now();
+                                        String[] dateList = date.toString().split("-");
+
+                                        int serviceNumber = Integer.parseInt(serviceIdList[0]) + 1;
+                                        String year = dateList[0];
+                                        String month = dateList[1];
+                                        String day = dateList[2];
+
+                                        String serviceId = serviceIdCreate(serviceNumber,day,month,year);
+
+                                        service.put("IMEIOrSNum",IMEIOrSNum);
+                                        service.put("shortInfo",shortInfo_txt);
+                                        service.put("longInfo",longInfo_txt);
+                                        service.put("serviceId",serviceId);
+                                        service.put("status",status);
+                                        service.put("date", FieldValue.serverTimestamp());
+
+                                        db.collection("Services")
+                                                .document(serviceId)
+                                                .set(service)
+                                                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void unused) {
+                                                        Toast.makeText(NewServiceActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
+                                                        startActivity(new Intent(NewServiceActivity.this,MenuActivity.class));
+                                                    }
+                                                });
 
 
+                                    }
                                 }
+
                             }
                         }
                     });
@@ -108,6 +140,9 @@ public class NewServiceActivity extends AppCompatActivity {
         }
     }
     private String serviceIdCreate(int serviceNumber, String day, String month, String year){
+        if (day.equals("1")) {
+            serviceNumber = 1;
+        }
         return Integer.toString(serviceNumber) + "_" +
                 day + "_" +
                 month + "_" +
