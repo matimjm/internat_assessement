@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".QueryActivity">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recViewServiceListQuery"
+        android:layout_width="match_parent"
+        android:layout_height="526dp"
+        tools:layout_editor_absoluteX="1dp"
+        tools:layout_editor_absoluteY="204dp" />
+
+    <Spinner
+        android:id="@+id/spinnerSort"
+        android:layout_width="wrap_content"
+        android:layout_height="24dp"
+        android:layout_marginBottom="30dp"
+        app:layout_constraintBottom_toTopOf="@+id/recViewServiceListQuery"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:entries="@array/sorters_list"/>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sort by"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerSort"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerSort" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

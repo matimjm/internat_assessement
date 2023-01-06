@@ -36,7 +36,7 @@ public class ServiceAddActivity extends AppCompatActivity {
             findExistingService.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(ServiceAddActivity.this, FindServiceInDeviceActivity.class);
+                    Intent intent = new Intent(ServiceAddActivity.this, ServiceInDeviceActivity.class);
                     intent.putExtra("uIMEIOrSNum", IMEIOrSNum);
 
                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

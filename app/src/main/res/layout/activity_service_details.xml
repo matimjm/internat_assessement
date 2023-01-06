@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ServiceDetailsActivity">
+
+    <TextView
+        android:id="@+id/textViewLongInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:text="LongInfo"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="112dp" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnStatusChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="50dp"
+        android:backgroundTint="@color/orange"
+        android:text="Change status"
+        android:textColor="@color/black"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLongInfo" />
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnSetStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/orange"
+        android:text="set"
+        android:visibility="gone"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerStatusChange"
+        app:layout_constraintStart_toStartOf="@+id/spinnerStatusChange"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerStatusChange" />
+
+    <TextView
+        android:id="@+id/textViewStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="current status"
+        app:layout_constraintStart_toStartOf="@+id/btnStatusChange"
+        app:layout_constraintTop_toBottomOf="@+id/btnStatusChange" />
+
+    <Spinner
+        android:id="@+id/spinnerStatusChange"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:entries="@array/statuses_list"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btnStatusChange"
+        app:layout_constraintStart_toEndOf="@+id/btnStatusChange"
+        app:layout_constraintTop_toTopOf="@+id/btnStatusChange"
+        app:layout_constraintVertical_bias="0.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

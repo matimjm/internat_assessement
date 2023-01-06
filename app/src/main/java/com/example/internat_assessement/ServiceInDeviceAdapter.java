@@ -1,6 +1,7 @@
 package com.example.internat_assessement;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,7 +40,20 @@ public class ServiceInDeviceAdapter extends RecyclerView.Adapter<ServiceInDevice
         holder.status.setText(service.status);
         holder.shortInfo.setText(service.shortInfo);
 
-        //TODO set onclicklistener on holder in order to get more details in service or change status
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(holder.itemView.getContext(),ServiceDetailsActivity.class);
+                intent.putExtra("uLongInfo",service.longInfo);
+                intent.putExtra("uStatus",service.status);
+                intent.putExtra("uServiceId",service.serviceId);
+                intent.putExtra("uIMEIOrSNum",service.IMEIOrSNum);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                holder.itemView.getContext().startActivity(intent);
+            }
+        });
+
 
     }
 

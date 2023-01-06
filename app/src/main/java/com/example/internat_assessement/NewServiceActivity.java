@@ -42,8 +42,6 @@ public class NewServiceActivity extends AppCompatActivity {
         spinnerStatuses = findViewById(R.id.spinnerStatuses);
         db = FirebaseFirestore.getInstance();
 
-        //TODO do a onclicklistener to get info and save that info to the database with getting the latest document and creating a new serviceId
-
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");

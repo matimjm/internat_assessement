@@ -29,7 +29,7 @@ public class MenuActivity extends AppCompatActivity {
         findService.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //startActivity(new Intent(MenuActivity.this, QueryActivity.class));
+                startActivity(new Intent(MenuActivity.this, QueryActivity.class));
             }
         });
     }

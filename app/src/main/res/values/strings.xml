@@ -1,8 +1,13 @@
 <resources>
     <string name="app_name">internat_assessement</string>
-    <string-array name="statuses">
+    <string-array name="statuses_list">
         <item>received</item>
         <item>in progress</item>
         <item>ready to pickup</item>
+    </string-array>
+    <string-array name="sorters_list">
+        <item>by date (from the latest)</item>
+        <item>by date (from the oldest)</item>
+        <item>by name (alphabetically)</item>
     </string-array>
 </resources>

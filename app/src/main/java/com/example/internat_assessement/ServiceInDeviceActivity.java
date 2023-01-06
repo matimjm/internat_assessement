@@ -14,11 +14,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import org.checkerframework.checker.units.qual.A;
-
 import java.util.ArrayList;
 
-public class FindServiceInDeviceActivity extends AppCompatActivity {
+public class ServiceInDeviceActivity extends AppCompatActivity {
 
     RecyclerView recyclerView;
     ArrayList<Service> serviceArrayList;
@@ -36,7 +34,7 @@ public class FindServiceInDeviceActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         serviceArrayList = new ArrayList<Service>();
-        serviceInDeviceAdapter = new ServiceInDeviceAdapter(FindServiceInDeviceActivity.this,serviceArrayList);
+        serviceInDeviceAdapter = new ServiceInDeviceAdapter(ServiceInDeviceActivity.this,serviceArrayList);
 
         recyclerView.setAdapter(serviceInDeviceAdapter);
 
