@@ -63,7 +63,6 @@ public class NewServiceActivity extends AppCompatActivity {
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 if (task.getResult().isEmpty()) {
-
                                     LocalDate date = LocalDate.now();
                                     String[] dateList = date.toString().split("-");
 
@@ -98,12 +97,18 @@ public class NewServiceActivity extends AppCompatActivity {
                                         LocalDate date = LocalDate.now();
                                         String[] dateList = date.toString().split("-");
 
-                                        int serviceNumber = Integer.parseInt(serviceIdList[0]) + 1;
+                                        String serviceId;
                                         String year = dateList[0];
                                         String month = dateList[1];
                                         String day = dateList[2];
 
-                                        String serviceId = serviceIdCreate(serviceNumber,day,month,year);
+                                        String prev_month = serviceIdList[2];
+
+                                        if (Integer.parseInt(month) > Integer.parseInt(prev_month)){
+                                            serviceId = serviceIdCreate(1,day,month,year);
+                                        }else {
+                                            serviceId = serviceIdCreate(Integer.parseInt(serviceIdList[0])+1,day,month,year);
+                                        }
 
                                         service.put("IMEIOrSNum",IMEIOrSNum);
                                         service.put("shortInfo",shortInfo_txt);
@@ -122,26 +127,17 @@ public class NewServiceActivity extends AppCompatActivity {
                                                         startActivity(new Intent(NewServiceActivity.this,MenuActivity.class));
                                                     }
                                                 });
-
-
                                     }
                                 }
-
                             }
                         }
                     });
-
                 }
             });
-
-
         }
     }
     private String serviceIdCreate(int serviceNumber, String day, String month, String year){
-        if (day.equals("1")) {
-            serviceNumber = 1;
-        }
-        return Integer.toString(serviceNumber) + "_" +
+        return serviceNumber + "_" +
                 day + "_" +
                 month + "_" +
                 year;
