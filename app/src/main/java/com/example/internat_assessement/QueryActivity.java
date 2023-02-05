@@ -18,7 +18,6 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -26,11 +25,15 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class QueryActivity extends AppCompatActivity {
 
@@ -86,7 +89,7 @@ public class QueryActivity extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                date = (i) + "-" + (i1+1) + "-" + i2;
+                date = (i2) + "-" + (i1+1) + "-" + i;
             }
         });
 
@@ -144,10 +147,28 @@ public class QueryActivity extends AppCompatActivity {
                     }
 
                 }else {
-                    Timestamp timestamp = new Timestamp(new Date(date));
+                    String[] d = date.split("-");
+                    System.out.println(date);
+                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+                    calendar.set(Calendar.YEAR, Integer.parseInt(d[2]));
+                    calendar.set(Calendar.MONTH, Integer.parseInt(d[1])-1);
+                    calendar.set(Calendar.DATE, Integer.parseInt(d[0]));
+                    calendar.set(Calendar.HOUR_OF_DAY, 0);
+                    calendar.set(Calendar.MINUTE, 0);
+                    calendar.set(Calendar.SECOND, 0);
+                    calendar.set(Calendar.MILLISECOND, 0);
+
+                    Timestamp startOfDay = new Timestamp(calendar.getTimeInMillis());
+
+                    calendar.add(Calendar.DATE, 1);
+                    calendar.add(Calendar.SECOND, -1);
+
+                    Timestamp endOfDay = new Timestamp(calendar.getTimeInMillis());
+
                     Query query = db.collection("Services")
                             .whereEqualTo("status",status)
-                            ///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
+                            .whereGreaterThan("date",startOfDay)
+                            .whereLessThan("date",endOfDay)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
                             .orderBy("date", Query.Direction.ASCENDING);
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
