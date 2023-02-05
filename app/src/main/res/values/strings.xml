@@ -8,6 +8,5 @@
     <string-array name="sorters_list">
         <item>by date (from the latest)</item>
         <item>by date (from the oldest)</item>
-        <item>by name (alphabetically)</item>
     </string-array>
 </resources>
