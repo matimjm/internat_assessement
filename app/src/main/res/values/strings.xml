@@ -1,10 +1,19 @@
 <resources>
-    <string name="app_name">internat_assessement</string>
+    <string name="app_name">internal_assessment</string>
+    <string name="services">SERVICES</string>
+    <string name="sort">SORT</string>
+    <string name="add">ADD</string>
+    <string name="reports">REPORTS</string>
+
+    <string name="openNavDrawer">Navigation Drawer Open</string>
+    <string name="closeNavDrawer">Navigation Drawer Close</string>
+    
     <string-array name="statuses_list">
         <item>received</item>
         <item>in progress</item>
         <item>ready to pickup</item>
     </string-array>
+    
     <string-array name="sorters_list">
         <item>by date (from the latest)</item>
         <item>by date (from the oldest)</item>

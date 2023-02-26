@@ -3,7 +3,9 @@ package com.example.internat_assessement;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -24,6 +26,9 @@ public class LoginActivity extends AppCompatActivity {
     private Button login;
 
     private FirebaseAuth auth;
+
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +62,6 @@ public class LoginActivity extends AppCompatActivity {
         public void onSuccess(AuthResult authResult) {
             Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();
             startActivity(new Intent(LoginActivity.this, MenuActivity.class));
-            finish();
         }
 
     }).addOnFailureListener(new OnFailureListener() {
@@ -77,4 +81,6 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(new Intent(LoginActivity.this, MenuActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));
         }
     }
+
+
 }

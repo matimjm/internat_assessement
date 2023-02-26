@@ -1,11 +1,16 @@
 package com.example.internat_assessement;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -18,6 +23,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -35,7 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-public class QueryActivity extends AppCompatActivity {
+public class QueryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     Spinner spinnerMainSort,spinnerStatus;
     RecyclerView recyclerView;
@@ -48,6 +54,10 @@ public class QueryActivity extends AppCompatActivity {
     String date;
     Switch switchCalendar;
 
+    //toolbar stuff
+    private Toolbar toolbar;
+    private DrawerLayout drawerLayout;
+    private NavigationView navigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +70,22 @@ public class QueryActivity extends AppCompatActivity {
         calendarView = findViewById(R.id.calendarView);
         btnSort = findViewById(R.id.btnSort);
         switchCalendar = findViewById(R.id.switchCalendar);
+
+        //toolbar stuff
+        toolbar = findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+        drawerLayout = findViewById(R.id.drawer_layout);
+        navigationView = findViewById(R.id.nav_view);
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,
+                drawerLayout,
+                toolbar,
+                R.string.openNavDrawer,
+                R.string.closeNavDrawer
+        );
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
+        navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
 
         //RECYCLERVIEW STUFF
@@ -199,6 +225,29 @@ public class QueryActivity extends AppCompatActivity {
     public static String toDate(String serviceId){
         String[] arr = serviceId.split("_");
         return arr[1] + "_" + arr[2] + "_" + arr[3];
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        System.out.println(id);
+        switch (id) {
+            case 2131296804: //Numeric id of sort
+                startActivity(new Intent(QueryActivity.this, QueryActivity.class));
+                break;
+            case  2131296805: //Numeric id of add
+                startActivity(new Intent(QueryActivity.this, CustomerAddActivity.class));
+                break;
+            case 2131296806: //Numeric id of reports
+                startActivity(new Intent(QueryActivity.this, MenuActivity.class));
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+        super.onPointerCaptureChanged(hasCapture);
     }
 }
 
