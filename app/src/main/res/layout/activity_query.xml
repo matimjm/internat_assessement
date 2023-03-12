@@ -14,11 +14,11 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recViewServiceListQuery"
-            android:layout_width="409dp"
-            android:layout_height="367dp"
+            android:layout_width="408dp"
+            android:layout_height="450dp"
+            android:layout_marginTop="20dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnSort" />
 
@@ -26,60 +26,68 @@
             android:id="@+id/btnSort"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="50dp"
             android:backgroundTint="@color/orange"
             android:text="Sort"
             android:textColor="@color/black"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/spinnerMainSort"
+            app:layout_constraintStart_toStartOf="@+id/spinnerMainSort"
             app:layout_constraintTop_toBottomOf="@+id/spinnerMainSort" />
 
         <CalendarView
             android:id="@+id/calendarView"
-            android:layout_width="225dp"
-            android:layout_height="323dp"
+            android:layout_width="212dp"
+            android:layout_height="298dp"
+            android:layout_marginTop="20dp"
             android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/recViewServiceListQuery"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Spinner
             android:id="@+id/spinnerStatus"
-            android:layout_width="161dp"
-            android:layout_height="24dp"
-            android:layout_marginTop="208dp"
-            android:layout_marginEnd="20dp"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/orange"
             android:entries="@array/statuses_list"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintEnd_toEndOf="@+id/switchCalendar"
+            app:layout_constraintStart_toStartOf="@+id/switchCalendar"
+            app:layout_constraintTop_toBottomOf="@+id/switchCalendar" />
 
         <TextView
             android:id="@+id/textView2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="264dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginBottom="5dp"
             android:text="Sort by"
-            app:layout_constraintEnd_toEndOf="@+id/spinnerMainSort"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintBottom_toTopOf="@+id/spinnerMainSort"
+            app:layout_constraintEnd_toEndOf="@+id/spinnerMainSort" />
 
         <Spinner
             android:id="@+id/spinnerMainSort"
-            android:layout_width="240dp"
+            android:layout_width="190dp"
             android:layout_height="23dp"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="4dp"
+            android:layout_marginTop="50dp"
+            android:background="@color/orange"
             android:entries="@array/sorters_list"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView2" />
+            app:layout_constraintEnd_toEndOf="@+id/spinnerStatus"
+            app:layout_constraintStart_toStartOf="@+id/spinnerStatus"
+            app:layout_constraintTop_toBottomOf="@+id/spinnerStatus" />
 
         <Switch
             android:id="@+id/switchCalendar"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
+            android:layout_width="150dp"
+            android:layout_height="25dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="70dp"
+            android:layout_marginEnd="28dp"
+            android:background="@color/orange"
             android:text="Hide calendar "
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spinnerStatus" />
+            app:layout_constraintStart_toEndOf="@+id/calendarView"
+            app:layout_constraintTop_toTopOf="parent" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
