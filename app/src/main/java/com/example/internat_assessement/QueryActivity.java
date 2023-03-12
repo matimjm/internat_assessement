@@ -51,7 +51,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
     String sortType,status;
     CalendarView calendarView;
     Button btnSort;
-    String date;
+    String selected_Date;
     Switch switchCalendar;
 
     //toolbar stuff
@@ -93,10 +93,10 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         db = FirebaseFirestore.getInstance();
-       // serviceArrayListQuery = new ArrayList<Service>();
-       // serviceInDeviceAdapter = new ServiceInDeviceAdapter(QueryActivity.this, serviceArrayListQuery);
+        // serviceArrayListQuery = new ArrayList<Service>();
+        // serviceInDeviceAdapter = new ServiceInDeviceAdapter(QueryActivity.this, serviceArrayListQuery);
 
-       // recyclerView.setAdapter(serviceInDeviceAdapter);
+        // recyclerView.setAdapter(serviceInDeviceAdapter);
 
         switchCalendar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -115,9 +115,13 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {
-                date = (i2) + "-" + (i1+1) + "-" + i;
+                selected_Date = (i) + "-" + (i1+1) + "-" + i2;  //i2 is a day i1 is a month and i is a year
+                selected_Date = toDateFormat(selected_Date);
+                System.out.println(selected_Date);
+                Toast.makeText(QueryActivity.this, selected_Date, Toast.LENGTH_SHORT).show();
             }
         });
+
 
         btnSort.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -135,7 +139,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                     if (sortType.equals("by date (from the latest)")){
                         Query query = db.collection("Services")
                                 .whereEqualTo("status",status)
-                                .orderBy("date", Query.Direction.DESCENDING);
+                                .orderBy("timestamp", Query.Direction.DESCENDING);
                         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -154,7 +158,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                     }else if(sortType.equals("by date (from the oldest)")) {
                         Query query = db.collection("Services")
                                 .whereEqualTo("status",status)
-                                .orderBy("date", Query.Direction.ASCENDING);
+                                .orderBy("timestamp", Query.Direction.ASCENDING);
                         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -173,44 +177,52 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                     }
 
                 }else {
-                    String[] d = date.split("-");
-                    System.out.println(date);
-                    Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-                    calendar.set(Calendar.YEAR, Integer.parseInt(d[2]));
-                    calendar.set(Calendar.MONTH, Integer.parseInt(d[1])-1);
-                    calendar.set(Calendar.DATE, Integer.parseInt(d[0]));
-                    calendar.set(Calendar.HOUR_OF_DAY, 0);
-                    calendar.set(Calendar.MINUTE, 0);
-                    calendar.set(Calendar.SECOND, 0);
-                    calendar.set(Calendar.MILLISECOND, 0);
-
-                    Timestamp startOfDay = new Timestamp(calendar.getTimeInMillis());
-
-                    calendar.add(Calendar.DATE, 1);
-                    calendar.add(Calendar.SECOND, -1);
-
-                    Timestamp endOfDay = new Timestamp(calendar.getTimeInMillis());
-
-                    Query query = db.collection("Services")
-                            .whereEqualTo("status",status)
-                            .whereGreaterThan("date",startOfDay)
-                            .whereLessThan("date",endOfDay)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
-                            .orderBy("date", Query.Direction.ASCENDING);
-                    query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                if (task.getResult().isEmpty()){
-                                    Toast.makeText(QueryActivity.this, "No services with such criteria", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    for (QueryDocumentSnapshot document : task.getResult()) {
-                                        serviceArrayListQuery.add(document.toObject(Service.class));
-                                        serviceInDeviceAdapter.notifyDataSetChanged();
+                    if(sortType.equals("by date (from the latest)")){
+                        Toast.makeText(QueryActivity.this, selected_Date, Toast.LENGTH_SHORT).show();
+                        Query query = db.collection("Services")
+                                .whereEqualTo("status",status)
+                                .whereEqualTo("date",selected_Date)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
+                                .orderBy("timestamp", Query.Direction.DESCENDING);
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().isEmpty()){
+                                        Toast.makeText(QueryActivity.this, "No services with such criteria", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            serviceArrayListQuery.add(document.toObject(Service.class));
+                                            serviceInDeviceAdapter.notifyDataSetChanged();
+                                        }
                                     }
                                 }
                             }
-                        }
-                    });
+                        });
+                    }else if(sortType.equals("by date (from the oldest)")){
+                        Toast.makeText(QueryActivity.this, selected_Date, Toast.LENGTH_SHORT).show();
+                        Query query = db.collection("Services")
+                                .whereEqualTo("status",status)
+                                .whereEqualTo("date",selected_Date)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
+                                .orderBy("timestamp", Query.Direction.ASCENDING);
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().isEmpty()){
+                                        Toast.makeText(QueryActivity.this, "No services with such criteria", Toast.LENGTH_SHORT).show();
+                                    }else {
+                                        Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show();
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            serviceArrayListQuery.add(document.toObject(Service.class));
+                                            serviceInDeviceAdapter.notifyDataSetChanged();
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
                 }
 
             }
@@ -222,9 +234,22 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
 
 
     }
-    public static String toDate(String serviceId){
+    public static String toDate(String serviceId){ //it has no use so far
         String[] arr = serviceId.split("_");
-        return arr[1] + "_" + arr[2] + "_" + arr[3];
+        return arr[3] + "-" + arr[2] + "-" + arr[1];
+    }
+    public static String toDateFormat(String selected_Date){
+        String[] selected_Date_List = selected_Date.split("-");
+        String year = selected_Date_List[0];
+        String month = selected_Date_List[1];
+        String day = selected_Date_List[2];
+        if (Integer.parseInt(month)<10) {
+            month = "0" + month;
+        }
+        if (Integer.parseInt(day)<10){
+            day = "0" + day;
+        }
+        return year + "-" + month + "-" + day;
     }
 
     @Override

@@ -82,7 +82,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                     HashMap<String, Object> service = new HashMap<>();
 
                     Query query = db.collection("Services")
-                            .orderBy("date", Query.Direction.DESCENDING)
+                            .orderBy("timestamp", Query.Direction.DESCENDING)
                             .limit(1);
                     query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -104,7 +104,8 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                     service.put("longInfo",longInfo_txt);
                                     service.put("serviceId",serviceId);
                                     service.put("status",status);
-                                    service.put("date", FieldValue.serverTimestamp());
+                                    service.put("date", date.toString());
+                                    service.put("timestamp", FieldValue.serverTimestamp());
 
                                     db.collection("Services")
                                             .document(serviceId)
@@ -141,7 +142,8 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                         service.put("longInfo",longInfo_txt);
                                         service.put("serviceId",serviceId);
                                         service.put("status",status);
-                                        service.put("date", FieldValue.serverTimestamp());
+                                        service.put("date", date.toString());
+                                        service.put("timestamp", FieldValue.serverTimestamp());
 
                                         db.collection("Services")
                                                 .document(serviceId)
