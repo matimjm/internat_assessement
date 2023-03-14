@@ -34,6 +34,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -110,7 +111,9 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
             }
         });
 
-
+        //make the selected date when nothing is clicked the today's date
+        LocalDate date = LocalDate.now();
+        selected_Date = date.toString();
 
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
@@ -181,7 +184,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                         Toast.makeText(QueryActivity.this, selected_Date, Toast.LENGTH_SHORT).show();
                         Query query = db.collection("Services")
                                 .whereEqualTo("status",status)
-                                .whereEqualTo("date",selected_Date)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
+                                .whereEqualTo("date",selected_Date)
                                 .orderBy("timestamp", Query.Direction.DESCENDING);
                         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -203,7 +206,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                         Toast.makeText(QueryActivity.this, selected_Date, Toast.LENGTH_SHORT).show();
                         Query query = db.collection("Services")
                                 .whereEqualTo("status",status)
-                                .whereEqualTo("date",selected_Date)///TODO DATE QUERY HERE!!!! BECAUSE IT IS NOT WORKING NOW
+                                .whereEqualTo("date",selected_Date)
                                 .orderBy("timestamp", Query.Direction.ASCENDING);
                         query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -227,11 +230,6 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
 
             }
         });
-
-
-
-        //TODO do a query but it would depend on the ifs from the fields that I will add in the layout
-
 
     }
     public static String toDate(String serviceId){ //it has no use so far

@@ -48,6 +48,8 @@ public class MenuActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState();
         navigationView.setNavigationItemSelectedListener(this);
 
+        ///TODO do reports listed in xml file
+
 
 
     }

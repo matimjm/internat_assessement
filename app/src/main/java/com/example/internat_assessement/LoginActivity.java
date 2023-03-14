@@ -45,6 +45,9 @@ public class LoginActivity extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+
+
                 String txt_username = username.getText().toString() + "@gmail.com";
                 String txt_password = password.getText().toString();
                 if (txt_username.isEmpty() || txt_password.isEmpty()) {

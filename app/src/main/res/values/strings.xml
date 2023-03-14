@@ -12,8 +12,15 @@
         <item>received</item>
         <item>in progress</item>
         <item>ready to pickup</item>
+        <item>completed</item>
     </string-array>
-    
+
+    <string-array name="add_statuses_list">
+        <item>received</item>
+        <item>in progress</item>
+        <item>ready to pickup</item>
+    </string-array>
+
     <string-array name="sorters_list">
         <item>by date (from the latest)</item>
         <item>by date (from the oldest)</item>

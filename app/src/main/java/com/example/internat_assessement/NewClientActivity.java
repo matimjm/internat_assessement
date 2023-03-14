@@ -61,7 +61,6 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
             public void onClick(View view) {
                 String email_txt = email.getText().toString();
                 String number_txt = number.getText().toString();
-
                 String clientId = db.collection("Clients").document().getId();
                 HashMap<String, Object> client = new HashMap<>();
                 client.put("email",email_txt);
