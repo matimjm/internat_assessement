@@ -104,13 +104,13 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
         int id = item.getItemId();
         System.out.println(id);
         switch (id) {
-            case 2131296804: //Numeric id of sort
+            case 2131296694: //Numeric id of sort
                 startActivity(new Intent(RecurringCustomerActivity.this, QueryActivity.class));
                 break;
-            case  2131296805: //Numeric id of add
+            case  2131296327: //Numeric id of add
                 startActivity(new Intent(RecurringCustomerActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296806: //Numeric id of reports
+            case 2131296649: //Numeric id of reports
                 startActivity(new Intent(RecurringCustomerActivity.this, MenuActivity.class));
                 break;
         }

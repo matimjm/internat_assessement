@@ -5,16 +5,17 @@ import com.google.firebase.firestore.FieldValue;
 
 public class Service {
 
-    String IMEIOrSNum, status, shortInfo, serviceId, longInfo, date;
+    String IMEIOrSNum, status, shortInfo, serviceId, longInfo, month_year, date;
     Timestamp timestamp;
 
     public Service(){}
 
-    public Service(String IMEIOrSNum, String status, String shortInfo, String serviceId, String date, String longInfo, Timestamp timestamp) {
+    public Service(String IMEIOrSNum, String status, String shortInfo, String serviceId, String month_year, String date, String longInfo, Timestamp timestamp) {
         this.IMEIOrSNum = IMEIOrSNum;
         this.status = status;
         this.shortInfo = shortInfo;
         this.serviceId = serviceId;
+        this.month_year = month_year;
         this.date = date;
         this.longInfo = longInfo;
         this.timestamp = timestamp;
@@ -60,16 +61,24 @@ public class Service {
         this.longInfo = longInfo;
     }
 
+    public String getMonth_year() {
+        return month_year;
+    }
+
+    public void setMonth_year(String month_year) {
+        this.month_year = month_year;
+    }
+
+    public Timestamp getTimestamp() {
+        return timestamp;
+    }
+
     public String getDate() {
         return date;
     }
 
     public void setDate(String date) {
         this.date = date;
-    }
-
-    public Timestamp getTimestamp() {
-        return timestamp;
     }
 
     public void setTimestamp(Timestamp timestamp) {

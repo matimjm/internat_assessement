@@ -97,6 +97,8 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                     String month = dateList[1];
                                     String day = dateList[2];
 
+                                    String month_year = month + "_" + year;
+
                                     String serviceId = serviceIdCreate(serviceNumber,day,month,year);
 
                                     service.put("IMEIOrSNum",IMEIOrSNum);
@@ -104,6 +106,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                     service.put("longInfo",longInfo_txt);
                                     service.put("serviceId",serviceId);
                                     service.put("status",status);
+                                    service.put("month_year",month_year);
                                     service.put("date", date.toString());
                                     service.put("timestamp", FieldValue.serverTimestamp());
 
@@ -128,6 +131,9 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                         String year = dateList[0];
                                         String month = dateList[1];
                                         String day = dateList[2];
+                                        String month_year = month + "_" + year;
+
+
 
                                         String prev_month = serviceIdList[2];
 
@@ -142,7 +148,8 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                         service.put("longInfo",longInfo_txt);
                                         service.put("serviceId",serviceId);
                                         service.put("status",status);
-                                        service.put("date", date.toString());
+                                        service.put("date",date.toString());
+                                        service.put("month_year",month_year);
                                         service.put("timestamp", FieldValue.serverTimestamp());
 
                                         db.collection("Services")
@@ -176,13 +183,13 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
         int id = item.getItemId();
         System.out.println(id);
         switch (id) {
-            case 2131296804: //Numeric id of sort
+            case 2131296694: //Numeric id of sort
                 startActivity(new Intent(NewServiceActivity.this, QueryActivity.class));
                 break;
-            case  2131296805: //Numeric id of add
+            case  2131296327: //Numeric id of add
                 startActivity(new Intent(NewServiceActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296806: //Numeric id of reports
+            case 2131296649: //Numeric id of reports
                 startActivity(new Intent(NewServiceActivity.this, MenuActivity.class));
                 break;
         }
