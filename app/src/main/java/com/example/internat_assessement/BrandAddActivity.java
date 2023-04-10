@@ -39,7 +39,7 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
         brandName = findViewById(R.id.editTextBrandName);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+         if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String clientId = extras.getString("uClientId");
 
             toolbar = findViewById(R.id.main_toolbar);
@@ -57,7 +57,7 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
             actionBarDrawerToggle.syncState();
             navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
 
-            db = FirebaseFirestore.getInstance();
+            db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
             newBrandAdd.setOnClickListener(new View.OnClickListener() {
                 @Override

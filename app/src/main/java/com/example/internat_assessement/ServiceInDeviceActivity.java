@@ -26,9 +26,10 @@ import java.util.ArrayList;
 public class ServiceInDeviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //toolbar stuff
-    private Toolbar toolbar;
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+    private Toolbar toolbar;    // Initializing the object toolbar (Toolbar), which is later used to be passed as a parameter in the ActionBarDrawerToggle
+    private DrawerLayout drawerLayout;  // Initializing the object drawerLayout (DrawerLayout), which draws the Toolbar in every activity
+    private NavigationView navigationView;  // Initializing the object navigationView (NavigationView), this object contains the items of our toolbar and is used to check if any of them was clicked
+
 
     RecyclerView recyclerView;
     ArrayList<Service> serviceArrayList;
@@ -41,33 +42,36 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
         setContentView(R.layout.activity_find_service_in_device);
 
         //toolbar stuff
-        toolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(toolbar);
-        drawerLayout = findViewById(R.id.drawer_layout);
-        navigationView = findViewById(R.id.nav_view);
-        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(
+       toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
+        setSupportActionBar(toolbar);   // In this place we are setting the SupportActionBar passing the toolbar object to the method
+        drawerLayout = findViewById(R.id.drawer_layout);    // We are connecting the earlier defined object (drawerLayout) with a component of a layout file (each component has a specified ID ('drawer_layout')
+        navigationView = findViewById(R.id.nav_view);   // We are connecting the earlier defined object (navigationView) with a component of a layout file (each component has a specified ID ('nav_view')
+        ActionBarDrawerToggle actionBarDrawerToggle = new ActionBarDrawerToggle(    // This is a method that is generating and rendering a new ActionBarDrawerToggle with a Toolbar
+                // as a parameters we are passing: the Activity hosting the drawer, the DrawerLayout to link to the given Activity's ActionBar,
+                // the toolbar to use if you have an independent Toolbar, and two Strings to describe the "open" and "closed" drawer action for accessibility.
                 this,
                 drawerLayout,
                 toolbar,
                 R.string.openNavDrawer,
                 R.string.closeNavDrawer
         );
-        drawerLayout.addDrawerListener(actionBarDrawerToggle);
-        actionBarDrawerToggle.syncState();
-        navigationView.setNavigationItemSelectedListener((NavigationView.OnNavigationItemSelectedListener) this);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);  // It adds a specific listener needed to notify when drawer events occur
+        actionBarDrawerToggle.syncState();  // It synchronizes the state of the drawer indicator with the DrawerLayout that was linked earlier
+        navigationView.setNavigationItemSelectedListener(this); // In this place we are setting the NavigationItemSelectedListener which notifies when a menu item is selected
 
         recyclerView = findViewById(R.id.recViewServiceList);
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));   // These piece of code sets the LayoutManager that RecyclerView will use
 
-        db = FirebaseFirestore.getInstance();
+
+        db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
         serviceArrayList = new ArrayList<Service>();
         serviceInDeviceAdapter = new ServiceInDeviceAdapter(ServiceInDeviceActivity.this,serviceArrayList);
 
         recyclerView.setAdapter(serviceInDeviceAdapter);
 
         Bundle extras = getIntent().getExtras();
-        if (extras != null) {
+         if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");
             EventChangeListener(IMEIOrSNum);
         }
@@ -82,7 +86,7 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
                     @Override
                     public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                        if (error != null) {
+                        if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
 
                             Log.e("Firestore error", error.getMessage());
                             return;
