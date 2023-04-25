@@ -3,11 +3,12 @@
     <string name="services">SERVICES</string>
     <string name="sort">SORT</string>
     <string name="add">ADD</string>
-    <string name="reports">REPORTS</string>
+    <string name="completed_services">COMPLETED\nSERVICES</string>
+    <string name="all_services">SERVICES\nSUMMARY</string>
 
     <string name="openNavDrawer">Navigation Drawer Open</string>
     <string name="closeNavDrawer">Navigation Drawer Close</string>
-    
+
     <string-array name="statuses_list">
         <item>received</item>
         <item>in progress</item>

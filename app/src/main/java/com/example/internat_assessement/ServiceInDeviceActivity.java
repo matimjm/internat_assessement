@@ -34,11 +34,12 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
     RecyclerView recyclerView;
     ArrayList<Service> serviceArrayList;
     ServiceInDeviceAdapter serviceInDeviceAdapter;
-    FirebaseFirestore db;
+        FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
+                                                               it is used in every activity and is executed while the activity is running*/
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
         setContentView(R.layout.activity_find_service_in_device);
 
         //toolbar stuff
@@ -70,7 +71,7 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
 
         recyclerView.setAdapter(serviceInDeviceAdapter);
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc.
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");
             EventChangeListener(IMEIOrSNum);
@@ -116,9 +117,12 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceInDeviceActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(ServiceInDeviceActivity.this, MenuActivity.class));
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(ServiceInDeviceActivity.this, CartesianChartActivity.class));
                 break;
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(ServiceInDeviceActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;
     }

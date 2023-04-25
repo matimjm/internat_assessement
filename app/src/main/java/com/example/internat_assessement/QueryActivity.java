@@ -12,10 +12,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -24,23 +22,13 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.sql.Time;
-import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.TimeZone;
 
 public class QueryActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {   // At this moment we define a main class of the activity, it holds the definitions of objects and the variety of classes
                                                                                                                     // it implements NavigationView.OnNavigationItemSelectedListener, so that the navigation bar can work
@@ -53,7 +41,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
     Spinner spinnerStatus;  // Initializing the object spinnerStatus (Spinner), it is a component of a layout file where the user can specify the status with which a service is being looked for by a user
     RecyclerView recyclerView;  // Initializing the object recyclerView (RecyclerView), which is a window in our layout file in which all the services that are a result of a query are shown
     ArrayList<Service> serviceArrayListQuery;   // Initializing the object serviceArrayListQuery (ArrayList<Service>), it is an array containing the services which are the result of a query, this array is used to pass all the services to the RecyclerView so that they can be shown to the user
-    ServiceInDeviceAdapter serviceInDeviceAdapter;  // Initializing the object serviceInDeviceAdapter (ServiceInDeviceAdapter), which is a piece of code created especially for the RecyclerView (it is basically the backend of RecyclerView), more information on how it works is provided in the ServiceInDeviceAdapter Class
+    ServiceQueryAdapter serviceQueryAdapter;  // Initializing the object serviceQueryAdapter (ServiceQueryAdapter), which is a piece of code created especially for the RecyclerView (it is basically the backend of RecyclerView), more information on how it works is provided in the ServiceQueryAdapter Class
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
     String sortType;    // Initializing the object sortType (String), which is later used to fetch the selected sorting type ("by date (from the latest)" or "by date (from the oldest)")
     String status; // Initializing the object status (String), which is later used to fetch the selected status to query by the user
@@ -70,7 +58,11 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
-        super.onCreate(savedInstanceState); //TODO I don't know how to comment it
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
+
+
+
+
         setContentView(R.layout.activity_query);    // This line of code sets a ContentView (a layout file (activity_query) that will be used within the activity) for an activity we are in (QueryActivity)
 
         spinnerMainSort = findViewById(R.id.spinnerMainSort);   // We are connecting the earlier defined object (spinnerMainSort) with a component of a layout file (each component has a specified ID ('spinnerMainSort')
@@ -139,9 +131,9 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
 
 
                 serviceArrayListQuery = new ArrayList<Service>();   // In this place we are assigning the ArrayList<Service> into an earlier defined object serviceArrayListQuery
-                serviceInDeviceAdapter = new ServiceInDeviceAdapter(QueryActivity.this, serviceArrayListQuery); // In this place we are assigning the ServiceInDeviceAdapter(QueryActivity.this, serviceArrayListQuery) into an earlier defined object
+                serviceQueryAdapter = new ServiceQueryAdapter(QueryActivity.this, serviceArrayListQuery); // In this place we are assigning the ServiceQueryAdapter(QueryActivity.this, serviceArrayListQuery) into an earlier defined object
 
-                recyclerView.setAdapter(serviceInDeviceAdapter);    // In this place we are setting the earlier created adapter into a recyclerView, the adapter is used among all the activities, because the clicking on the service in a RecyclerView works the same in every activity
+                recyclerView.setAdapter(serviceQueryAdapter);    // In this place we are setting the earlier created adapter into a recyclerView
 
                 sortType = spinnerMainSort.getSelectedItem().toString();    // In this place we are fetching the selected by a user sort type in a spinnerMainSort
                 status = spinnerStatus.getSelectedItem().toString();    // In this place we are fetching the selected by a user status with which a service is being looked by a user in a spinnerStatus
@@ -160,7 +152,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                         Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show(); // This Toast message notifies the user that the services were found successfully with the criteria he has specified
                                         for (QueryDocumentSnapshot document : task.getResult()) {   // this for-each loop iterates over all of the results in a results QueryDocumentSnapshot
                                             serviceArrayListQuery.add(document.toObject(Service.class));    //  In each sequence of a loop we are adding the next services as Service objects found by a query to the serviceArrayListQuery
-                                            serviceInDeviceAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceInDeviceAdapter)
+                                            serviceQueryAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceQueryAdapter)
                                         }
                                     }
                                 }
@@ -180,7 +172,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                         Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show(); // This Toast message notifies the user that the services were found successfully with the criteria he has specified
                                         for (QueryDocumentSnapshot document : task.getResult()) {   // this for-each loop iterates over all of the results in a results QueryDocumentSnapshot
                                             serviceArrayListQuery.add(document.toObject(Service.class));    //  In each sequence of a loop we are adding the next services as Service objects found by a query to the serviceArrayListQuery
-                                            serviceInDeviceAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceInDeviceAdapter)
+                                            serviceQueryAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceQueryAdapter)
                                         }
                                     }
                                 }
@@ -204,7 +196,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                         Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show(); // This Toast message notifies the user that the services were found successfully with the criteria he has specified
                                         for (QueryDocumentSnapshot document : task.getResult()) {   // this for-each loop iterates over all of the results in a results QueryDocumentSnapshot
                                             serviceArrayListQuery.add(document.toObject(Service.class));    //  In each sequence of a loop we are adding the next services as Service objects found by a query to the serviceArrayListQuery
-                                            serviceInDeviceAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceInDeviceAdapter)
+                                            serviceQueryAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceQueryAdapter)
                                         }
                                     }
                                 }
@@ -225,7 +217,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                         Toast.makeText(QueryActivity.this, "Succesfully found", Toast.LENGTH_SHORT).show(); // This Toast message notifies the user that the services were found successfully with the criteria he has specified
                                         for (QueryDocumentSnapshot document : task.getResult()) {   // this for-each loop iterates over all of the results in a results QueryDocumentSnapshot
                                             serviceArrayListQuery.add(document.toObject(Service.class));    //  In each sequence of a loop we are adding the next services as Service objects found by a query to the serviceArrayListQuery
-                                            serviceInDeviceAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceInDeviceAdapter)
+                                            serviceQueryAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceQueryAdapter)
                                         }
                                     }
                                 }
@@ -263,16 +255,16 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(QueryActivity.this, CustomerAddActivity.class));    // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(QueryActivity.this, MenuActivity.class));   // If a reports button was clicked you are redirected to the MenuActivity
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(QueryActivity.this, CartesianChartActivity.class));   // If a reports button was clicked you are redirected to the CartesianChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(QueryActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {   //TODO CHECK IF THIS METHOD IS REALLY NEEDED
-        super.onPointerCaptureChanged(hasCapture);
-    }
+
 }
 

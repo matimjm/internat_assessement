@@ -8,7 +8,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,7 +29,11 @@ public class DeviceAddActivity extends AppCompatActivity implements NavigationVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
-        super.onCreate(savedInstanceState); //TODO I don't know how to comment it
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
+
+
+
+
         setContentView(R.layout.activity_device_add);   // This line of code sets a ContentView (a layout file (activity_device_add) that will be used within the activity) for an activity we are in (DeviceAddActivity)
 
         //toolbar stuff
@@ -96,15 +99,15 @@ public class DeviceAddActivity extends AppCompatActivity implements NavigationVi
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(DeviceAddActivity.this, CustomerAddActivity.class));   // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(DeviceAddActivity.this, MenuActivity.class));  // If a reports button was clicked you are redirected to the MenuActivity
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(DeviceAddActivity.this, CartesianChartActivity.class));  // If a reports button was clicked you are redirected to the CartesianChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(DeviceAddActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {   //TODO CHECK IF THIS METHOD IS REALLY NEEDED
-        super.onPointerCaptureChanged(hasCapture);
-    }
+
 }

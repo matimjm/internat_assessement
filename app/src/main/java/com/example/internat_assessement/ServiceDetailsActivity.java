@@ -1,41 +1,27 @@
 package com.example.internat_assessement;
 
-import androidx.activity.result.contract.ActivityResultContract;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.DocumentChange;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.sql.SQLOutput;
 
 public class ServiceDetailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -48,13 +34,14 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
     TextView longInfo, currentStatus;
     Button btnChangeStatus, btnSetStatus;
     Spinner statuses;
-    FirebaseFirestore db;
+        FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
     public String clientId;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
+                                                               it is used in every activity and is executed while the activity is running*/
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
         setContentView(R.layout.activity_service_details);
 
         //toolbar stuff
@@ -85,12 +72,13 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
         statuses.setVisibility(View.GONE);
         btnSetStatus.setVisibility(View.GONE);
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc.
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String longInfo_txt = extras.getString("uLongInfo");
             String status_txt = extras.getString("uStatus");
             String serviceId_txt = extras.getString("uServiceId");
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");
+            String comingFrom = extras.getString("uComingFrom");
             longInfo.setText(longInfo_txt);
             currentStatus.setText(status_txt);
 
@@ -140,10 +128,18 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
 
 
 
-                            //GO BACK TO SERVICES LIST
-                            Intent intent = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class);
-                            intent.putExtra("uIMEIOrSNum", IMEIOrSNum);
-                            startActivity(intent);
+                            switch (comingFrom) {
+                                case "QueryActivity":
+                                    Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);
+                                    startActivity(intent);  // In this case we are enabling the Intent to work
+                                    break;
+                                case "ServiceInDeviceActivity":
+                                    Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class);
+                                    intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);
+                                    startActivity(intent1);  // In this case we are enabling the Intent to work
+                                    break;
+                            }
+
 
                         }
                     });
@@ -153,7 +149,6 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
 
         }
 
-        //TODO send sms message/email to a device owner that the status was changed
     }
 
     @Override
@@ -167,9 +162,12 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceDetailsActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(ServiceDetailsActivity.this, MenuActivity.class));
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(ServiceDetailsActivity.this, CartesianChartActivity.class));
                 break;
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(ServiceDetailsActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;
     }

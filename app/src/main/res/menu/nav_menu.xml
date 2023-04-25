@@ -10,9 +10,13 @@
                 android:icon="@drawable/ic_action_add"
                 android:id="@+id/addItem"/>
             <item
-                android:title="@string/reports"
+                android:id="@+id/completedServices"
                 android:icon="@drawable/ic_action_reports"
-                android:id="@+id/reports"/>
+                android:title="@string/completed_services" />
+            <item
+                android:id="@+id/allServices"
+                android:icon="@drawable/ic_action_reports"
+                android:title="@string/all_services" />
         </menu>
     </item>
 

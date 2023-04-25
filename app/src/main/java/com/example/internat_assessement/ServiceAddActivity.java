@@ -25,8 +25,9 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
     Button findExistingService, addNewService;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
+                                                               it is used in every activity and is executed while the activity is running*/
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
         setContentView(R.layout.activity_service_add);
 
         //toolbar stuff
@@ -47,7 +48,7 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
         actionBarDrawerToggle.syncState();  // It synchronizes the state of the drawer indicator with the DrawerLayout that was linked earlier
         navigationView.setNavigationItemSelectedListener(this); // In this place we are setting the NavigationItemSelectedListener which notifies when a menu item is selected
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc.
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");
 
@@ -60,8 +61,8 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
                     Intent intent = new Intent(ServiceAddActivity.this, NewServiceActivity.class);
                     intent.putExtra("uIMEIOrSNum", IMEIOrSNum);
 
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                    startActivity(intent);  // In this case we are enabling the Intent to work
                 }
             });
             findExistingService.setOnClickListener(new View.OnClickListener() {
@@ -70,8 +71,8 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
                     Intent intent = new Intent(ServiceAddActivity.this, ServiceInDeviceActivity.class);
                     intent.putExtra("uIMEIOrSNum", IMEIOrSNum);
 
-                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                    startActivity(intent);  // In this case we are enabling the Intent to work
                 }
             });
 
@@ -90,9 +91,12 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
             case 2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceAddActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(ServiceAddActivity.this, MenuActivity.class));
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(ServiceAddActivity.this, CartesianChartActivity.class));
                 break;
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(ServiceAddActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;
     }

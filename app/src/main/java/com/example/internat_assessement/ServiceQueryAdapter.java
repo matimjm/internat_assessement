@@ -12,26 +12,26 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 
-public class ServiceInDeviceAdapter extends RecyclerView.Adapter<ServiceInDeviceAdapter.MyViewHolder> {
+public class ServiceQueryAdapter extends  RecyclerView.Adapter<ServiceQueryAdapter.MyViewHolder>{
 
     Context context;
     ArrayList<Service> serviceArrayList;
 
-    public ServiceInDeviceAdapter(Context context, ArrayList<Service> serviceArrayList) {
+    public ServiceQueryAdapter(Context context, ArrayList<Service> serviceArrayList) {
         this.context = context;
         this.serviceArrayList = serviceArrayList;
     }
 
     @NonNull
     @Override
-    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ServiceQueryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.service_item_layout,parent,false);
 
-        return new MyViewHolder(v);
+        return new ServiceQueryAdapter.MyViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ServiceQueryAdapter.MyViewHolder holder, int position) {
 
         Service service = serviceArrayList.get(position);
 
@@ -49,12 +49,11 @@ public class ServiceInDeviceAdapter extends RecyclerView.Adapter<ServiceInDevice
                 intent.putExtra("uStatus",service.status);
                 intent.putExtra("uServiceId",service.serviceId);
                 intent.putExtra("uIMEIOrSNum",service.IMEIOrSNum);
-                intent.putExtra("uComingFrom","ServiceInDeviceActivity");
+                intent.putExtra("uComingFrom","QueryActivity");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
                 holder.itemView.getContext().startActivity(intent);
             }
         });
-
 
     }
 
@@ -66,7 +65,6 @@ public class ServiceInDeviceAdapter extends RecyclerView.Adapter<ServiceInDevice
     public static class MyViewHolder extends RecyclerView.ViewHolder {
 
         TextView IMEIOrSNum, status, serviceId, shortInfo;
-
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);

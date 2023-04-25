@@ -9,7 +9,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -43,7 +42,11 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
-        super.onCreate(savedInstanceState); //TODO I don't know how to comment it
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
+
+
+
+
         setContentView(R.layout.activity_recurring_customer);   // This line of code sets a ContentView (a layout file (activity_recurring_customer) that will be used within the activity) for an activity we are in (RecurringCustomerActivity)
 
         //toolbar stuff
@@ -90,7 +93,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
 
                         if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
                             Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                            Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process //TODO ASK THE TEACHER IF I SHOULD DELETE IT OR NOT
+                            Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
                             return;
                         }
 
@@ -119,15 +122,15 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(RecurringCustomerActivity.this, CustomerAddActivity.class));   // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(RecurringCustomerActivity.this, MenuActivity.class));  // If a reports button was clicked you are redirected to the MenuActivity
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(RecurringCustomerActivity.this, CartesianChartActivity.class));  // If a reports button was clicked you are redirected to the CartesianChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(RecurringCustomerActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {   //TODO CHECK IF THIS METHOD IS REALLY NEEDED
-        super.onPointerCaptureChanged(hasCapture);
-    }
+
 }

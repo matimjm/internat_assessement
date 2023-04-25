@@ -1,7 +1,6 @@
 package com.example.internat_assessement;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -9,26 +8,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
-import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -53,7 +44,11 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
-        super.onCreate(savedInstanceState); //TODO I don't know how to comment it
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
+
+
+
+
         setContentView(R.layout.activity_new_device);   // This line of code sets a ContentView (a layout file (activity_new_device) that will be used within the activity) for an activity we are in (NewDeviceActivity)
 
         //toolbar stuff
@@ -122,88 +117,82 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
                 }
             });
 
-            btnNewDeviceAdd.setOnClickListener(new View.OnClickListener() {
+            btnNewDeviceAdd.setOnClickListener(new View.OnClickListener() { // We are setting the OnClickListener to the btnNewDeviceAdd, in order to constantly listen when the button was click,
+                                                                            // and when it was clicked execute equivalent code
                 @Override
-                public void onClick(View view) {
+                public void onClick(View view) {    // The code under this method is executed once the btnNoModel button is clicked
 
-                    String IMEIOrSNum_txt = IMEIOrSNum.getText().toString();
+                    String IMEIOrSNum_txt = IMEIOrSNum.getText().toString();    // This line of code fetches the IMEI or Serial Number as String into IMEIOrSNum_txt String that the user has inputted in an IMEIOrSNum EditText field
 
-                    String modelName = spinnerModels.getSelectedItem().toString();
+                    String modelName = spinnerModels.getSelectedItem().toString();  // This line of code fetches the name of a model as String into modelName String that the user has chosen in a spinner spinnerModels
 
 
 
-                    HashMap<String, Object> device = new HashMap<>();
+                    HashMap<String, Object> device = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new device in a collection "Devices"
 
-                    db.collection("Models")
-                            .whereEqualTo("modelName",modelName)
-                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    db.collection("Models") // In here we are getting the instance of collection "Models"
+                            .whereEqualTo("modelName",modelName)    // This is a statement which filters the models so that the result of query is only a model chosen by a user
+                            .get()  // We are getting the results of a query as a document form
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // The OnCompleteListener is added in order to listen when the adding process was finished,
+                                                                                              // once it was finished and a completion was returned we are running equivalent code
                                 @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {     // Once a completion was returned the code under this method is run
+                                    if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over the results of a query
+                                                                                                            // (if models were not duplicated by a user earlier this query should have only one result so there is only one round of a loop)
 
-                                            String modelId = documentSnapshot.getString("modelId");
+                                            String modelId = documentSnapshot.getString("modelId"); // We are fetching a from a model that was chosen by a user,
+                                                                                                         // in order to save it later so that the collections are connected with each other (sth like SQL joins)
 
-                                            device.put("modelId", modelId);
-                                            device.put("IMEIOrSNum", IMEIOrSNum_txt);
-                                            device.put("clientId", clientId);
+                                            device.put("modelId", modelId); // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
+                                            device.put("IMEIOrSNum", IMEIOrSNum_txt);   // This line inputs the data (key = "IMEIOrSNum" (it is a name of a field in a Firestore), value = IMEIOrSNum_txt) into the HashMap
+                                            device.put("clientId", clientId);   // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
 
-                                            db.collection("Devices")
-                                                    .document(IMEIOrSNum_txt)
-                                                    .set(device)
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            db.collection("Devices")    // In here we are getting the instance of collection "Models"
+                                                    .document(IMEIOrSNum_txt)   // creating a document of a name of IMEI or Serial Number inputted by a user and accesing it
+                                                    .set(device)    // We are setting the HashMap as a data of a document we have accessed in a line before
+                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
+                                                                                                            // once it was finished and a success was returned we are running equivalent code
                                                         @Override
-                                                        public void onSuccess(Void unused) {
-                                                            Intent intent = new Intent(NewDeviceActivity.this, ServiceAddActivity.class);
-                                                            intent.putExtra("uIMEIOrSNum", IMEIOrSNum_txt);
-
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                                            startActivity(intent);
+                                                        public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
+                                                            Intent intent = new Intent(NewDeviceActivity.this, ServiceAddActivity.class);   // An Intent is created in order to later redirect the user to the ServiceAddActivity (to add the service to the newly created device)
+                                                            intent.putExtra("uIMEIOrSNum", IMEIOrSNum_txt);   // With an Intent we can pass variables, so we are passing the "uIMEIOrSNum"
+                                                                                                                    // in order to later in ServiceAddActivity show only services belonging to the newly created device (the device is newly created so no devices are shown)
+                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                                            startActivity(intent);  // In this case we are enabling the Intent to work
                                                         }
-                                                    });
+                                                    }); // The closing bracket of OnSuccessListener
                                         }
 
                                     }
                                 }
-                            });
-
-
-
-
-
-
-
-
-
-
-
+                            }); // The closing bracket of OnCompleteListener
                 }
-            });
+            }); // The closing bracket of OnClickListener
 
 
         }
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        System.out.println(id);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
+        int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
             case 2131296694: //Numeric id of sort
-                startActivity(new Intent(NewDeviceActivity.this, QueryActivity.class));
-                break;
+                startActivity(new Intent(NewDeviceActivity.this, QueryActivity.class)); // If a sort button was clicked you are redirected to the QueryActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
-                startActivity(new Intent(NewDeviceActivity.this, CustomerAddActivity.class));
-                break;
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(NewDeviceActivity.this, MenuActivity.class));
-                break;
+                startActivity(new Intent(NewDeviceActivity.this, CustomerAddActivity.class));   // If an add button was clicked you are redirected to the CustomerAddActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(NewDeviceActivity.this, CartesianChartActivity.class));  // If a reports button was clicked you are redirected to the CartesianChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(NewDeviceActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
-        return true;
+        return true;    // Just casually returning true, because this method has to return a boolean
     }
 
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
-    }
+
 }

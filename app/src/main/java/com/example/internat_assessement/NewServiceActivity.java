@@ -16,7 +16,6 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
@@ -40,11 +39,12 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
     EditText shortInfo, longInfo;
     Button newServiceAdd;
     Spinner spinnerStatuses;
-    FirebaseFirestore db;
+        FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
+                                                               it is used in every activity and is executed while the activity is running*/
+        super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
         setContentView(R.layout.activity_new_service);
 
         //toolbar stuff
@@ -71,7 +71,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
         spinnerStatuses = findViewById(R.id.spinnerStatuses);
         db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
-        Bundle extras = getIntent().getExtras();
+        Bundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc.
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");
 
@@ -120,7 +120,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     Toast.makeText(NewServiceActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
-                                                    startActivity(new Intent(NewServiceActivity.this,MenuActivity.class));
+                                                    startActivity(new Intent(NewServiceActivity.this, CartesianChartActivity.class));
                                                 }
                                             });
                                 }else {
@@ -139,8 +139,10 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
 
 
                                         String prev_month = serviceIdList[2];
+                                        String prev_year = serviceIdList[3];
 
-                                        if (Integer.parseInt(month) > Integer.parseInt(prev_month)){
+                                        if ((Integer.parseInt(month) > Integer.parseInt(prev_month)) && (Integer.parseInt(year) == Integer.parseInt(prev_year))
+                                            || (Integer.parseInt(year) > Integer.parseInt(prev_year))){
                                             serviceId = serviceIdCreate(1,day,month,year);
                                         }else {
                                             serviceId = serviceIdCreate(Integer.parseInt(serviceIdList[0])+1,day,month,year);
@@ -162,7 +164,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                                     @Override
                                                     public void onSuccess(Void unused) {
                                                         Toast.makeText(NewServiceActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();
-                                                        startActivity(new Intent(NewServiceActivity.this,MenuActivity.class));
+                                                        startActivity(new Intent(NewServiceActivity.this, CartesianChartActivity.class));
                                                     }
                                                 });
                                     }
@@ -192,9 +194,12 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(NewServiceActivity.this, CustomerAddActivity.class));
                 break;
-            case 2131296649: //Numeric id of reports
-                startActivity(new Intent(NewServiceActivity.this, MenuActivity.class));
+            case 2131296821: //Numeric id of reports
+                startActivity(new Intent(NewServiceActivity.this, CartesianChartActivity.class));
                 break;
+            case 2131296820: //Numeric id of all services
+                startActivity(new Intent(NewServiceActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
         return true;
     }
