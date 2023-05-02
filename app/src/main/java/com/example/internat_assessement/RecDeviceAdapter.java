@@ -87,8 +87,6 @@ public class RecDeviceAdapter extends RecyclerView.Adapter<RecDeviceAdapter.MyVi
                         }
                     }
                 });
-
-
     }   // The closing bracket of OnBindViewHolder
 
     @Override

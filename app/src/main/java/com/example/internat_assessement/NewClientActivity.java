@@ -70,7 +70,7 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
             public void onClick(View view) {    // The code under this method is executed once the btnNewClientAdd button is clicked
                 String email_txt = email.getText().toString();  // This line of code fetches the email as String into email_txt String that the user has inputted in an email EditText field
                 String number_txt = number.getText().toString();    // This line of code fetches the number as String into number_txt String that the user has inputted in an number EditText field
-                String clientId = db.collection("Clients").document().getId();  // This line of code creates a new client with a random id
+                String clientId = db.collection("Clients").document().getId();  // This line of code generates a document ID without creating the actual document in a Firebase Firestore
                 HashMap<String, Object> client = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new client in a collection "Clients"
                 client.put("email",email_txt);  // This line inputs the data (key = "email" (it is a name of a field in a Firestore), value = email_txt) into the HashMap
                 client.put("number",number_txt);    // This line inputs the data (key = "number" (it is a name of a field in a Firestore), value = number_txt) into the HashMap

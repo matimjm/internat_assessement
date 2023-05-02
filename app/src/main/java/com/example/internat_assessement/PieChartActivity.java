@@ -54,18 +54,18 @@ public class PieChartActivity extends AppCompatActivity implements NavigationVie
 
 
         pieChartView = findViewById(R.id.pie_chart_view);   // We are connecting the earlier defined object (pieChartView) with a component of a layout file (each component has a specified ID ('pie_chart_view')
-        pieChartView.setProgressBar(findViewById(R.id.progress_bar));
+        pieChartView.setProgressBar(findViewById(R.id.progress_bar));   // We are setting the earlier defined ProgressBar progress_bar to the earlier initialized object pieChartView
 
-        Pie pie = AnyChart.pie();
+        Pie pie = AnyChart.pie();   // This line of code creates a new instance of a Pie chart
 
         db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
 
-        Query received = db.collection("Services")
+        Query received = db.collection("Services")  // This query is made in order to count how many services with a status "received" there are in a database
                 .whereEqualTo("status","received");
-        Query in_progress = db.collection("Services")
+        Query in_progress = db.collection("Services")   // This query is made in order to count how many services with a status "in progress" there are in a database
                 .whereEqualTo("status","in progress");
-        Query ready_to_pickup = db.collection("Services")
+        Query ready_to_pickup = db.collection("Services")   // This query is made in order to count how many services with a status "ready to pickup" there are in a database
                 .whereEqualTo("status","ready to pickup");
 
         Task<List<Task<?>>> pie_query = Tasks.whenAllComplete(received.get(),in_progress.get(),ready_to_pickup.get())   // This line of code is basically fetching the results of all earlier defined queries

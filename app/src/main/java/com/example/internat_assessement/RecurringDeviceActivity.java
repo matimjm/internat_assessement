@@ -119,8 +119,6 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                         }
                     }
                 });
-
-
     }
 
     @Override

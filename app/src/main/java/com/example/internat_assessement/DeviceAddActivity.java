@@ -81,12 +81,7 @@ public class DeviceAddActivity extends AppCompatActivity implements NavigationVi
                     startActivity(intent);  // In this case we are enabling the Intent to work
                 }
             });
-
-
-
-
         }
-
     }   // The closing bracket of onCreate method
 
     @Override
@@ -108,6 +103,4 @@ public class DeviceAddActivity extends AppCompatActivity implements NavigationVi
         }
         return true;    // Just casually returning true, because this method has to return a boolean
     }
-
-
 }

@@ -80,9 +80,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
         EventChangeListener();  // It is a function implemented by me in order to make the code a bit cleaner,
                                 // this function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
                                 // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
-
     }
-
     private void EventChangeListener() {    // This function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
                                             // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
 
@@ -96,20 +94,14 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                             Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
                             return;
                         }
-
                         for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-
                             if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
-
                                 clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
-
                             }
                             recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
                         }
-
                     }
                 }); // The closing bracket of .addSnapshotListener
-
     }
 
     @Override

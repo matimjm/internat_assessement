@@ -142,7 +142,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                         Query query = db.collection("Services") // We are creating a query which will be looking through the collection "Services" in a database, in a query if we have multiple statements all the results must meet the conditions stated in all the statements
                                 .whereEqualTo("status",status)  // The first statement of a query means that we are looking for a service which has a "status" equal to the status (String) selected by a user earlier in spinnerStatus
                                 .orderBy("timestamp", Query.Direction.DESCENDING);  // The second statement of a query means that we are going to order the results of a query in a DESCENDING order, which means that the latest ones will be shown first
-                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // This OnCompleteListener is constantly checking if a query was completed
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // This OnBundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc. is constantly checking if a query was completed
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a query was completed the code under this method is run
                                 if (task.isSuccessful()) {  // If a task was successful (in other words the query was completed, no matter if with 100 results or with 0 results, the task was still successful)

@@ -35,7 +35,7 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
     protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
         super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
-        setContentView(R.layout.activity_brand_add);    // This line of code sets a ContentView (a layout file (activity_brand_add) that will be used within the activity) for an activity we are in (DeviceAddActivity)
+        setContentView(R.layout.activity_brand_add);    // This line of code sets a ContentView (a layout file (activity_brand_add) that will be used within the activity) for an activity we are in (BrandAddActivity)
 
         newBrandAdd = findViewById(R.id.btnNewBrandAdd);    // We are connecting the earlier defined object (newBrandAdd) with a component of a layout file (each component has a specified ID ('btnNewBrandAdd')
         brandName = findViewById(R.id.editTextBrandName);   // We are connecting the earlier defined object (brandName) with a component of a layout file (each component has a specified ID ('editTextBrandName')
@@ -68,7 +68,7 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
                 public void onClick(View view) {    // If a button was clicked the code under this method is executed
 
                     String brandName_txt = brandName.getText().toString();  // This line of code fetches the email as String into email_txt String that the user has inputted in an email EditText field
-                    String brandId = db.collection("Brands").document().getId();    // In this place we are creating a document in a collection "Brands" with a random id
+                    String brandId = db.collection("Brands").document().getId();    // // This line of code generates a document ID without creating the actual document in a Firebase Firestore
 
                     HashMap<String,Object> brand = new HashMap<>();     // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new brand in a collection "Brands"
 
