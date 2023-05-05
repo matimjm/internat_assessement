@@ -31,18 +31,20 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
     private NavigationView navigationView;  // Initializing the object navigationView (NavigationView), this object contains the items of our toolbar and is used to check if any of them was clicked
 
 
-    TextView longInfo, currentStatus;
-    Button btnChangeStatus, btnSetStatus;
-    Spinner statuses;
-        FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
-    public String clientId;
+    TextView longInfo;  // Initializing the object longInfo (TextView), it is a component of a layout file, on which the long info about the service is displayed
+    TextView currentStatus; // Initializing the object currentStatus (TextView), it is a component of a layout file, on which the current status of the service is displayed
+    Button btnChangeStatus; // Initializing the object btnChangeStatus (Button), it is a component of a layout file, on which a user can click and the window of changing the status is displayed
+    Button btnSetStatus;    // Initializing the object btnSetStatus (Button), it is a component of a layout file, on which a user can click and set the new status of the service
+    Spinner statuses;   // Initializing the object statuses (Spinner), it is a component of a layout file, on which a user can choose from the statuses
+    FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
+    String clientId;    // Initializing the variable clientId (String), which is later used to store the id of a client owning the device that a service is added
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {     /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
         super.onCreate(savedInstanceState); // This line initializes the activity and restores its previous state, if any.
-        setContentView(R.layout.activity_service_details);
+        setContentView(R.layout.activity_service_details);  // This line of code sets a ContentView (a layout file (activity_service_details) that will be used within the activity) for an activity we are in (ServiceDetailsActivity)
 
         //toolbar stuff
        toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
@@ -62,61 +64,60 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
         actionBarDrawerToggle.syncState();  // It synchronizes the state of the drawer indicator with the DrawerLayout that was linked earlier
         navigationView.setNavigationItemSelectedListener(this); // In this place we are setting the NavigationItemSelectedListener which notifies when a menu item is selected
 
-        longInfo = findViewById(R.id.textViewLongInfo);
-        currentStatus = findViewById(R.id.textViewStatus);
-        btnChangeStatus = findViewById(R.id.btnStatusChange);
-        btnSetStatus = findViewById(R.id.btnSetStatus);
-        statuses = findViewById(R.id.spinnerStatusChange);
+        longInfo = findViewById(R.id.textViewLongInfo); // We are connecting the earlier defined object (longInfo) with a component of a layout file (each component has a specified ID ('textViewLongInfo')
+        currentStatus = findViewById(R.id.textViewStatus);  // We are connecting the earlier defined object (currentStatus) with a component of a layout file (each component has a specified ID ('textViewStatus')
+        btnChangeStatus = findViewById(R.id.btnStatusChange);   // We are connecting the earlier defined object (btnChangeStatus) with a component of a layout file (each component has a specified ID ('btnStatusChange')
+        btnSetStatus = findViewById(R.id.btnSetStatus); // We are connecting the earlier defined object (btnSetStatus) with a component of a layout file (each component has a specified ID ('btnSetStatus')
+        statuses = findViewById(R.id.spinnerStatusChange);  // We are connecting the earlier defined object (statuses) with a component of a layout file (each component has a specified ID ('spinnerStatusChange')
         db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
-        statuses.setVisibility(View.GONE);
-        btnSetStatus.setVisibility(View.GONE);
+        statuses.setVisibility(View.GONE);  // Firstly we have to set the visibility of statuses to gone, because we want to show it only when the btnChangeStatus
+        btnSetStatus.setVisibility(View.GONE);  // Firstly we have to set the visibility of statuses to gone, because we want to show it only when the btnChangeStatus is clicked
 
         Bundle extras = getIntent().getExtras();    // In here we are getting the data (extras) from the Intent from the activity that passed some extras like variables etc.
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
-            String longInfo_txt = extras.getString("uLongInfo");
-            String status_txt = extras.getString("uStatus");
-            String serviceId_txt = extras.getString("uServiceId");
-            String IMEIOrSNum = extras.getString("uIMEIOrSNum");
-            String comingFrom = extras.getString("uComingFrom");
-            longInfo.setText(longInfo_txt);
-            currentStatus.setText(status_txt);
+            String longInfo_txt = extras.getString("uLongInfo");    // Assigning a uLongInfo, which is a longInfo of a service that a user has clicked on
+            String status_txt = extras.getString("uStatus");    // Assigning a uStatus, which is a status_txt of a service that a user has clicked on
+            String serviceId_txt = extras.getString("uServiceId");  // Assigning a uServiceId, which is a serviceId_txt of a service that a user has clicked on
+            String IMEIOrSNum = extras.getString("uIMEIOrSNum");    // Assigning a uIMEIOrSNum, which is a IMEIOrSNum of a device that has a service that a user has clicked on
+            String comingFrom = extras.getString("uComingFrom");    // Assigning a uComingFrom, which is a name of an activity that we are coming from, because later we have two options, depending on the page you are coming from
+            longInfo.setText(longInfo_txt); // In this place we are setting the text of longInfo so that it is visible to the user
+            currentStatus.setText(status_txt);  // In this place we are setting the text of currentStatus so that it is visible to the user
 
-            btnChangeStatus.setOnClickListener(new View.OnClickListener() {
+            btnChangeStatus.setOnClickListener(new View.OnClickListener() { // This line of code is constantly checking whether the btnChangeStatus Button was clicked
                 @Override
-                public void onClick(View view) {
-                    statuses.setVisibility(View.VISIBLE);
-                    btnSetStatus.setVisibility(View.VISIBLE);
+                public void onClick(View view) {    // If a button was clicked an equivalent code under this method is run
+                    statuses.setVisibility(View.VISIBLE);   // We are setting the visibility of statuses to visible, so that it is visible to the user
+                    btnSetStatus.setVisibility(View.VISIBLE);   // We are setting the visibility of btnSetStatus to visible, so that it is visible to the user
 
-                    btnSetStatus.setOnClickListener(new View.OnClickListener() {
+                    btnSetStatus.setOnClickListener(new View.OnClickListener() {    // This line of code is constantly checking whether the btnSetStatus Button was clicked
                         @Override
-                        public void onClick(View view) {
-                            String status = statuses.getSelectedItem().toString();
-                            db.collection("Services")
-                                    .document(serviceId_txt)
-                                    .update("status",status);
+                        public void onClick(View view) {    // If a button was clicked an equivalent code under this method is run
+                            String status = statuses.getSelectedItem().toString();  // This line of code fetched the chosen by a user status that he wants to change the current status of a service to
+                            db.collection("Services")   // In here we are getting the instance of collection "Services"
+                                    .document(serviceId_txt)    // We are getting the access to the document with an id equal to serviceId_txt
+                                    .update("status",status);   // In this place we are not setting, but updating the field of status to a new status of a user's choice
 
-
-                            //get the number in order to know who to send sms
-
-                            Query query = db.collection("Devices")
-                                    .whereEqualTo("IMEIOrSNum",IMEIOrSNum);
-                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            Query query = db.collection("Devices")  // We are creating a query in order to later access the number of an owner of a serviced device
+                                    .whereEqualTo("IMEIOrSNum",IMEIOrSNum); // In this place we are finding a device that is being currently serviced
+                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // Getting the query and setting the OnCompleteListener
                                 @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                            clientId = document.getString("clientId");
-                                            Query query = db.collection("Clients")
-                                                    .whereEqualTo("clientId",clientId);
-                                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
+                                    if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost)
+                                        for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                                                                    // a loop has only one round because there is only one result of a query, because each device has a unique IMEI or Serial Number
+                                            clientId = document.getString("clientId");  // In this place we are fetching the id of client owning the device to later link to its document
+                                            Query query = db.collection("Clients")  // We are creating a query on a colletction "Clients" so that we can later access the number of a client
+                                                    .whereEqualTo("clientId",clientId); // In here we are applying a filter that says - "clientId" has to be equal to the clientId of a client owning the currently serviced device
+                                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // Getting the query and setting the OnCompleteListener
                                                 @Override
-                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        for (QueryDocumentSnapshot document : task.getResult()) {
-                                                            String number = document.getString("number");
-                                                            String messageToSend = "Your service status has changed (from " + status_txt + " to " + status + ")";
-                                                            SmsManager.getDefault().sendTextMessage(number,null,messageToSend,null,null);
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
+                                                    if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost)
+                                                        for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                                                                                    // a loop has only one round because there is only one result of a query, because each client has a unique clientId
+                                                            String number = document.getString("number");   // In this place we are fetching the phone number of a client
+                                                            String messageToSend = "Your service status has changed (from " + status_txt + " to " + status + ")";   // This line of code creates a message that we want to send to a client in order to inform him about the change of a status of a service
+                                                            SmsManager.getDefault().sendTextMessage(number,null,messageToSend,null,null);   // This line of code accesses the SMS app in the phone and sends an SMS message that we have prepared a line before
                                                         }
                                                     }
                                                 }
@@ -128,16 +129,17 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
 
 
 
-                            switch (comingFrom) {
-                                case "QueryActivity":
-                                    Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);
+                            switch (comingFrom) {   // In this case we have two options - one we are coming from a QueryActivity and then we want to come back to the QueryActivity,
+                                                    // And second option is that we are coming from ServiceInDeviceActivity and then after we changed the status we want to come back to the ServiceInDeviceActivity
+                                case "QueryActivity":   // When we are coming from QueryActivity equivalent code under this case is run
+                                    Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);    // We are creating an intent in order to later redirect a user to the QueryActivity
                                     startActivity(intent);  // In this case we are enabling the Intent to work
-                                    break;
-                                case "ServiceInDeviceActivity":
-                                    Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class);
-                                    intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);
+                                    break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+                                case "ServiceInDeviceActivity": // When we are coming from ServiceInDeviceActivity equivalent code under this case is run
+                                    Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class); // We are creating an intent in order to later redirect a user to the ServiceInDeviceActivity
+                                    intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);    // As well we have to pass the IMEIOrSNum in order to know that the only services we want to see are those from the device with the specified IMEI or Serial Number
                                     startActivity(intent1);  // In this case we are enabling the Intent to work
-                                    break;
+                                    break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
                             }
 
 
@@ -152,28 +154,22 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
     }
 
     @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-        System.out.println(id);
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
+        int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
             case 2131296694: //Numeric id of sort
-                startActivity(new Intent(ServiceDetailsActivity.this, QueryActivity.class));
-                break;
+                startActivity(new Intent(ServiceDetailsActivity.this, QueryActivity.class));    // If a sort button was clicked you are redirected to the QueryActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
-                startActivity(new Intent(ServiceDetailsActivity.this, CustomerAddActivity.class));
-                break;
+                startActivity(new Intent(ServiceDetailsActivity.this, CustomerAddActivity.class));  // If a sort button was clicked you are redirected to the CustomerAddActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case 2131296821: //Numeric id of reports
-                startActivity(new Intent(ServiceDetailsActivity.this, CartesianChartActivity.class));
-                break;
+                startActivity(new Intent(ServiceDetailsActivity.this, CartesianChartActivity.class));   // If a sort button was clicked you are redirected to the CartesianChartActivity
+                break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case 2131296820: //Numeric id of all services
                 startActivity(new Intent(ServiceDetailsActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
-        return true;
-    }
-
-    @Override
-    public void onPointerCaptureChanged(boolean hasCapture) {
-        super.onPointerCaptureChanged(hasCapture);
+        return true;    // Just casually returning true, because this method has to return a boolean
     }
 }

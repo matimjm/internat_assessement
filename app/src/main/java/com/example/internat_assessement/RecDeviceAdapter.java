@@ -70,10 +70,10 @@ public class RecDeviceAdapter extends RecyclerView.Adapter<RecDeviceAdapter.MyVi
                                 holder.modelName.setText(modelName);    // Having the object device we can fetch the data that is held in it in order to set the fields in our holder,
                                                                         // this line of code sets the modelName field in a holder with a fetched modelName from the device
                                 holder.IMEIOrSNum.setText(device.IMEIOrSNum);   // Having the object device we can fetch the data that is held in it in order to set the fields in our holder,
-                                // this line of code sets the IMEIOrSNum field in a holder with a fetched IMEIOrSNum from the device
+                                                                                // this line of code sets the IMEIOrSNum field in a holder with a fetched IMEIOrSNum from the device
 
                                 holder.itemView.setOnClickListener(new View.OnClickListener() { // In this place we are setting the OnClickListener that is required to perform equivalent code
-                                    // once the user has clicked on one of the items of an array displayed on the RecyclerView
+                                                                                                // once the user has clicked on one of the items of an array displayed on the RecyclerView
                                     @Override
                                     public void onClick(View view) {    // The code of this method is performed once the user has clicked on one of the items displayed
                                         Intent intent = new Intent(holder.itemView.getContext(),ServiceAddActivity.class);  // An Intent is created in order to later redirect the user to the ServiceAddActivity (to add the service to the device he has clicked on)
