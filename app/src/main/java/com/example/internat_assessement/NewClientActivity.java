@@ -28,6 +28,8 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
     private NavigationView navigationView;  // Initializing the object navigationView (NavigationView), this object contains the items of our toolbar and is used to check if any of them was clicked
     EditText email; // Initializing the object email (EditText), it is a component of a layout file, on which a user can enter the email of a new client that just came to the shop for the first time
     EditText number;    // Initializing the object number (EditText), it is a component of a layout file, on which a user can enter the number of a new client that just came to the shop for the first time
+    EditText name;    // Initializing the object name (EditText), it is a component of a layout file, on which a user can enter the name of a new client that just came to the shop for the first time
+    EditText surname;    // Initializing the object surname (EditText), it is a component of a layout file, on which a user can enter the surname of a new client that just came to the shop for the first time
     Button btnNewClientAdd;    // Initializing the object btnNewClientAdd (Button), when it is clicked the queried services (by the criteria specified by a user) are shown
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
 
@@ -61,6 +63,9 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
 
         email = findViewById(R.id.editTextEmail);   // We are connecting the earlier defined object (email) with a component of a layout file (each component has a specified ID ('editTextEmail')
         number = findViewById(R.id.editTextNumber); // We are connecting the earlier defined object (number) with a component of a layout file (each component has a specified ID ('editTextNumber')
+        name = findViewById(R.id.editTextName); // We are connecting the earlier defined object (name) with a component of a layout file (each component has a specified ID ('editTextName')
+        surname = findViewById(R.id.editTextSurname); // We are connecting the earlier defined object (surname) with a component of a layout file (each component has a specified ID ('editTextSurname')
+
         btnNewClientAdd = findViewById(R.id.btnNewClientAdd);   // We are connecting the earlier defined object (btnNewClientAdd) with a component of a layout file (each component has a specified ID ('btnNewClientAdd')
         db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
@@ -70,11 +75,16 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
             public void onClick(View view) {    // The code under this method is executed once the btnNewClientAdd button is clicked
                 String email_txt = email.getText().toString();  // This line of code fetches the email as String into email_txt String that the user has inputted in an email EditText field
                 String number_txt = number.getText().toString();    // This line of code fetches the number as String into number_txt String that the user has inputted in an number EditText field
+                String name_txt = name.getText().toString();    // This line of code fetches the name as String into name_txt String that the user has inputted in an number EditText field
+                String surname_txt = surname.getText().toString();    // This line of code fetches the surname as String into surname_txt String that the user has inputted in an number EditText field
+
                 String clientId = db.collection("Clients").document().getId();  // This line of code generates a document ID without creating the actual document in a Firebase Firestore
                 HashMap<String, Object> client = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new client in a collection "Clients"
                 client.put("email",email_txt);  // This line inputs the data (key = "email" (it is a name of a field in a Firestore), value = email_txt) into the HashMap
                 client.put("number",number_txt);    // This line inputs the data (key = "number" (it is a name of a field in a Firestore), value = number_txt) into the HashMap
                 client.put("clientId",clientId);    // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
+                client.put("name",name_txt);    // This line inputs the data (key = "name" (it is a name of a field in a Firestore), value = name_txt) into the HashMap
+                client.put("surname",surname_txt);  // This line inputs the data (key = "surname" (it is a name of a field in a Firestore), value = surname_txt) into the HashMap
                 db.collection("Clients")    // In here we are getting the instance of colleciton "Clients"
                         .document(clientId) // We are accessing the document with a name of clientId
                         .set(client)    // We are setting the HashMap as a data of a document we have accessed in a line before

@@ -22,17 +22,17 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Client ID :"
+                android:text="Name :"
                 android:textColor="@color/black"
                 android:textSize="26sp"
                 android:textStyle="bold"/>
 
             <TextView
-                android:id="@+id/tvClientId"
+                android:id="@+id/tvName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="ihpone 111"
+                android:text="Mateusz Marciniak"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="naprawa"
+                android:text="mateuszmjm@icloud.com"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 
@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
-                android:text="in progress"
+                android:text="722390909"
                 android:textColor="@color/black"
                 android:textSize="20sp" />
 

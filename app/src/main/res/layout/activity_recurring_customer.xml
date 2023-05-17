@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CartesianChartActivity"
+    tools:context=".RecurringCustomerActivity"
     android:id="@+id/drawer_layout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -16,11 +16,45 @@
             android:id="@+id/recViewCustomerList"
             android:layout_width="409dp"
             android:layout_height="729dp"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="200dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/editTextSurname"
+            android:layout_width="156dp"
+            android:layout_height="31dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Surname"
+            android:inputType="textPersonName"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/recViewCustomerList"
+            app:layout_constraintStart_toEndOf="@+id/editTextName" />
+
+        <EditText
+            android:id="@+id/editTextName"
+            android:layout_width="156dp"
+            android:layout_height="31dp"
+            android:layout_marginBottom="8dp"
+            android:ems="10"
+            android:hint="Name"
+            android:inputType="textPersonName"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toTopOf="@+id/recViewCustomerList"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toRightOf="@+id/editTextSurname"
+            app:layout_constraintBottom_toTopOf="@+id/recViewCustomerList"
+            android:text="Search"
+            android:textColor="@color/black"
+            android:id="@+id/btnSearch"/>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

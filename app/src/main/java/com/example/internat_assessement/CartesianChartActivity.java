@@ -278,6 +278,8 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
          *  */
         /*TODO ADD A DEVICE QUERY (QUERY BY IMEIOrSNum), IN A RECURRING DEVICES LIST,
          *   */
+        /*TODO MAKE A CHART OF the phone that breakes the most, because i am holding data without the use (I sent a graph screenshot to discord)
+         */
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 

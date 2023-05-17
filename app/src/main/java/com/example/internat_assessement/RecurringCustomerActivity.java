@@ -13,13 +13,20 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -37,8 +44,9 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
     RecCustomerAdapter recCustomerAdapter;  // Initializing the object recCustomerAdapter (RecCustomerAdapter), which is an adapter for RecyclerView created by me, it has personalized methods satisfying the needs of an app,
                                             // the recCustomerAdapter is required for a recyclerView to work, more info, about how works the adapter is provided as comments in a RecCustomerAdapter.java file
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
-
-
+    EditText name; // Initializing the object name (EditText), it is a component of a layout file, on which a user can enter the name of a client he is looking for in a query
+    EditText surname;   // Initializing the object name (EditText), it is a component of a layout file, on which a user can enter the name of a client he is looking for in a query
+    Button search; // Initializing the object search (Button), it is a component of a layout file, on which a user can click and the client with a specified beforehand name and surname occurs
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
@@ -71,37 +79,142 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
         recyclerView.setHasFixedSize(true); //  We are setting true that the RecyclerView has fixed size - it means that if adapter changes it cannot affect the size of the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // These piece of code sets the LayoutManager that RecyclerView will use
 
-        db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
-        clientArrayList = new ArrayList<Client>();  // In this place we are assigning the ArrayList<Client> into an earlier defined object clientArrayList
-        recCustomerAdapter = new RecCustomerAdapter(RecurringCustomerActivity.this,clientArrayList);    // In this place we are assigning the RecCustomerAdapter provided with needed parameters to the earlier created object recCustomerAdapter
 
-        recyclerView.setAdapter(recCustomerAdapter);    // This line of code sets the adapter to the recyclerView, in other words we are connecting the backend (recCustomerAdapter), with frontend side (recyclerView)
+        name = findViewById(R.id.editTextName);
+        surname = findViewById(R.id.editTextSurname);
+        search = findViewById(R.id.btnSearch);
+        search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
+                clientArrayList = new ArrayList<Client>();  // In this place we are assigning the ArrayList<Client> into an earlier defined object clientArrayList
+                recCustomerAdapter = new RecCustomerAdapter(RecurringCustomerActivity.this,clientArrayList);    // In this place we are assigning the RecCustomerAdapter provided with needed parameters to the earlier created object recCustomerAdapter
 
-        EventChangeListener();  // It is a function implemented by me in order to make the code a bit cleaner,
-                                // this function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
-                                // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
+                recyclerView.setAdapter(recCustomerAdapter);    // This line of code sets the adapter to the recyclerView, in other words we are connecting the backend (recCustomerAdapter), with frontend side (recyclerView)
+
+                String name_txt = name.getText().toString();
+                String surname_txt = surname.getText().toString();
+                System.out.println(name_txt);
+                System.out.println(surname_txt);
+                if (name_txt.isEmpty() && surname_txt.isEmpty()){
+                    EventChangeListener("allEmpty","none", "none");  // It is a function implemented by me in order to make the code a bit cleaner,
+                                                           // this function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
+                                                           // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
+                }
+                else if (name_txt.isEmpty()){
+                    EventChangeListener("nameEmpty",surname_txt, "none");   // It is a function implemented by me in order to make the code a bit cleaner,
+                                                            // this function queries (without one statement - in order to get all of the clients that have the surname = surname_txt from the database) through the "Clients" collection in a Firestore,
+                                                            // and adds all of the results of a query (basically all of the clients having the same surname in a database) to the clientArrayList in order to display it in the RecyclerView
+
+                }
+                else if (surname_txt.isEmpty()){
+                    EventChangeListener("surnameEmpty",name_txt, "none");   // It is a function implemented by me in order to make the code a bit cleaner,
+                                                                // this function queries (without one statement - in order to get all of the clients that have the name = name_txt from the database) through the "Clients" collection in a Firestore,
+                                                                // and adds all of the results of a query (basically all of the clients having the same name in a database) to the clientArrayList in order to display it in the RecyclerView
+
+                }
+                else{
+                    EventChangeListener("noEmpty",name_txt,surname_txt);   // It is a function implemented by me in order to make the code a bit cleaner,
+                    // this function queries (without one statement - in order to get all of the clients that have the name = name_txt from the database) through the "Clients" collection in a Firestore,
+                    // and adds all of the results of a query (basically all of the clients having the same name in a database) to the clientArrayList in order to display it in the RecyclerView
+
+                }
+            }
+        });
+
+
+
     }
-    private void EventChangeListener() {    // This function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
-                                            // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
+    private void EventChangeListener(String flag,String data1,String data2) {      // This function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
+                                                                        // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
+                                                                        // It has two arguments one - String flag - which indicates us if a user has left any field open, and if so query through the one that was filled (if both were empty, do not query through anything - just show all clients)
+        if (flag.equals("allEmpty")){
+            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-        db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                        if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                            Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                            Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                            return;
-                        }
-                        for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-                            if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
-                                clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
+                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
+                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
+                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
+                                return;
                             }
-                            recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
+                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
+                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
+                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
+                                }
+                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
+                            }
+                        }
+                    }); // The closing bracket of .addSnapshotListener
+        }else if (flag.equals("nameEmpty")){
+            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
+                    .whereEqualTo("surname",data1)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
+                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
+                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
+                                return;
+                            }
+                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
+                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
+                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
+                                }
+                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
+                            }
+                        }
+                    }); // The closing bracket of .addSnapshotListener
+        }
+        else if (flag.equals("surnameEmpty")){
+            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
+                    .whereEqualTo("name",data1)
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+
+                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
+                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
+                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
+                                return;
+                            }
+                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
+                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
+                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
+                                }
+                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
+                            }
+                        }
+                    }); // The closing bracket of .addSnapshotListener
+        }
+        else if (flag.equals("noEmpty")){
+            System.out.println(data1);
+            System.out.println(data2);
+            Query query = db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
+                    .whereEqualTo("name",data1) // The first statement of a query means that we are looking for a service which has a "name" equal to the data1 (String), which is a name typed in by a user
+                    .whereEqualTo("surname",data2); // The second statement of a query means that we are also looking for a service which has a "surname" equal to the data2, which is a surname typed in by a user
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // This OnCompleteListener is constantly checking if a query was completed
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a query was completed the code under this method is run
+                    if (task.isSuccessful()) {  // If a task was successful (in other words the query was completed, no matter if with 100 results or with 0 results, the task was still successful)
+                        if (task.getResult().isEmpty()){    // This if checks if query has 0 results (isEmpty - checks if a results container is empty, if it is the code under this if is run)
+                            Toast.makeText(RecurringCustomerActivity.this, "No clients with such name and surname", Toast.LENGTH_SHORT).show(); // This Toast message notifies the user that no services were found with the criteria he has specified
+                        }else { // This else is run once the results container is not empty which means that query has found some results
+                            Toast.makeText(RecurringCustomerActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();    // This Toast message notifies the user that the services were found successfully with the criteria he has specified
+                            for (QueryDocumentSnapshot document : task.getResult()) {   // this for-each loop iterates over all of the results in a results QueryDocumentSnapshot
+                                clientArrayList.add(document.toObject(Client.class));    //  In each sequence of a loop we are adding the next services as Service objects found by a query to the serviceArrayListQuery
+                            }
+                            recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceQueryAdapter)
+
                         }
                     }
-                }); // The closing bracket of .addSnapshotListener
+                }
+            });
+        }
+
+
     }
 
     @Override

@@ -53,7 +53,7 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
                                             // this line of code sets the email field in a holder with a fetched email from the client
         holder.number.setText(client.number);   // Having the object client we can fetch the data that is held in it in order to set the fields in our holder,
                                                 // this line of code sets the number field in a holder with a fetched number from the client
-        holder.clientId.setText(client.clientId);   // Having the object client we can fetch the data that is held in it in order to set the fields in our holder,
+        holder.name.setText(client.name + " " + client.surname);   // Having the object client we can fetch the data that is held in it in order to set the fields in our holder,
                                                     // this line of code sets the clientId field in a holder with a fetched clientId from the client
         holder.itemView.setOnClickListener(new View.OnClickListener() { // In this place we are setting the OnClickListener that is required to perform equivalent code
                                                                         // once the user has clicked on one of the items of an array displayed on the RecyclerView
@@ -78,14 +78,14 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
 
     public static class MyViewHolder extends RecyclerView.ViewHolder {  // This class is a backend for an item that is displayed in a RecyclerView, in this function the String fields (that are in the itemView) are initialized
 
-        TextView email, number, clientId;   // The String fields of an itemView are initialized
+        TextView email, number, name;   // The String fields of an itemView are initialized
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             email = itemView.findViewById(R.id.tvEmail);    // We are connecting the earlier defined object (email) with a component of a layout file (client_item_layout) (each component has a specified ID ('tvEmail')
             number = itemView.findViewById(R.id.tvNumber);  // We are connecting the earlier defined object (number) with a component of a layout file (client_item_layout) (each component has a specified ID ('tvNumber')
-            clientId = itemView.findViewById(R.id.tvClientId);  // We are connecting the earlier defined object (clientId) with a component of a layout file (client_item_layout) (each component has a specified ID ('tvClientId')
+            name = itemView.findViewById(R.id.tvName);  // We are connecting the earlier defined object (clientId) with a component of a layout file (client_item_layout) (each component has a specified ID ('tvClientId')
 
 
         }
