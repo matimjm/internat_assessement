@@ -13,18 +13,26 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class RecurringDeviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
+public class RecurringDeviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
     // object initialization
     // toolbar stuff
@@ -37,6 +45,9 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
     RecDeviceAdapter recDeviceAdapter;  // Initializing the object recDeviceAdapter (RecDeviceAdapter), which is an adapter for RecyclerView created by me, it has personalized methods satisfying the needs of an app,
                                         // the recDeviceAdapter is required for a recyclerView to work, more info, about how it works the adapter is provided as comments in a RecDeviceAdapter.java file
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
+
+    Spinner spinnerModels;
+    Spinner spinnerBrands;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
@@ -70,8 +81,34 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
         recyclerView.setHasFixedSize(true); // We are setting true that the RecyclerView has fixed size - it means that if adapter changes it cannot affect the size of the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // These piece of code sets the LayoutManager that RecyclerView will use
 
-
+        spinnerBrands = findViewById(R.id.spinnerBrands);
+        spinnerModels = findViewById(R.id.spinnerModels);
+        List<String> Brands = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
+                                                    // in order to later display them to choose from in a spinnerBrands
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Brands);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
+                                                                                                                                    // we are doing it, because later we want to display all of the brands in a spinnerBrands
+        spinnerBrands.setAdapter(adapter);  // In this place we are setting the Adapter of a spinnerBrands, the adapter we are setting is an ArrayAdapter we have created a line before
+        spinnerBrands.setOnItemSelectedListener(this);
         db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
+
+        db.collection("Brands") // We are creating the instance of a collection "Brands"
+                .get()  // Getting the instance of a collection "Brands" in an instance form
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {    // Adding an OnCompleteListener which constantly listens when a process of getting the instance is finished,
+                    // and once it is finished we are performing a for-each loop iterating over all of the results of an instance
+                    // (there is no filters so the results of completing getting the instance are all of the brands in a Firestore database)
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) { // The code under this method is performed once completion is found by a OnCompleteListener
+                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no brands)
+                            for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                // and adds each brand's name to a Brands ArrayList in order to display it in a spinnerBrands
+                                String brand = document.getString("brandName"); // This line of code fetches the name of a brands that is currently iterated in a for-each loop into a brand (String)
+                                Brands.add(brand);  // The fetched name of a brand is added to a Brands ArrayList
+                            }
+                            adapter.notifyDataSetChanged(); // This line of code is needed in order to notify the adapter that the DataSet has Changed (In other words it works like a refresher for an adapter of spinnerBrands)
+                        }
+                    }
+                });
+
         deviceArrayList = new ArrayList<Device>();  // In this place we are assigning the ArrayList<Device> into an earlier defined object deviceArrayList
         recDeviceAdapter = new RecDeviceAdapter(RecurringDeviceActivity.this, deviceArrayList); // In this place we are assigning the RecDeviceAdapter provided with needed parameters to the earlier created object recDeviceAdapter
 
@@ -142,4 +179,50 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String brandName = spinnerBrands.getSelectedItem().toString();
+        db.collection("Brands")
+                .whereEqualTo("brandName", brandName)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no brands)
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String brandId = documentSnapshot.getString("brandId");
+                                List<String> Models = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
+                                // in order to later display them to choose from in a spinnerBrands
+                                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Models);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
+                                // we are doing it, because later we want to display all of the brands in a spinnerBrands
+                                spinnerModels.setAdapter(adapter2);  // In this place we are setting the Adapter of a spinnerBrands, the adapter we are setting is an ArrayAdapter we have created a line before
+
+                                db.collection("Models") // We are creating the instance of a collection "Models"
+                                        .whereEqualTo("brandId",brandId)
+                                        .get()  // Getting the instance of a collection "Models" in an instance form
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {    // Adding an OnCompleteListener which constantly listens when a process of getting the instance is finished,
+                                            // and once it is finished we are performing a for-each loop iterating over all of the results of an instance
+                                            // (there is no filters so the results of completing getting the instance are all of the models in a Firestore database)
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) { // The code under this method is performed once completion is found by a OnCompleteListener
+                                                if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                        // and adds each brand's name to a Brands ArrayList in order to display it in a spinnerBrands
+                                                        String model = document.getString("modelName"); // This line of code fetches the name of a brands that is currently iterated in a for-each loop into a brand (String)
+                                                        Models.add(model);  // The fetched name of a brand is added to a Brands ArrayList
+                                                    }
+                                                    adapter2.notifyDataSetChanged(); // This line of code is needed in order to notify the adapter that the DataSet has Changed (In other words it works like a refresher for an adapter of spinnerBrands)
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }
