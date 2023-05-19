@@ -12,10 +12,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Display;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -26,6 +28,7 @@ import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -48,6 +51,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
 
     Spinner spinnerModels;
     Spinner spinnerBrands;
+    Button search;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
@@ -58,9 +62,10 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
 
 
         setContentView(R.layout.activity_recurring_device); // This line of code sets a ContentView (a layout file (activity_recurring_device) that will be used within the activity) for an activity we are in (RecurringDeviceActivity)
+        db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
         //toolbar stuff
-       toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
+        toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
         setSupportActionBar(toolbar);   // In this place we are setting the SupportActionBar passing the toolbar object to the method
         drawerLayout = findViewById(R.id.drawer_layout);    // We are connecting the earlier defined object (drawerLayout) with a component of a layout file (each component has a specified ID ('drawer_layout')
         navigationView = findViewById(R.id.nav_view);   // We are connecting the earlier defined object (navigationView) with a component of a layout file (each component has a specified ID ('nav_view')
@@ -81,16 +86,17 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
         recyclerView.setHasFixedSize(true); // We are setting true that the RecyclerView has fixed size - it means that if adapter changes it cannot affect the size of the RecyclerView
         recyclerView.setLayoutManager(new LinearLayoutManager(this));   // These piece of code sets the LayoutManager that RecyclerView will use
 
+        search = findViewById(R.id.btnSearch);
+
         spinnerBrands = findViewById(R.id.spinnerBrands);
         spinnerModels = findViewById(R.id.spinnerModels);
         List<String> Brands = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
                                                     // in order to later display them to choose from in a spinnerBrands
+        Brands.add("none");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Brands);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
                                                                                                                                     // we are doing it, because later we want to display all of the brands in a spinnerBrands
         spinnerBrands.setAdapter(adapter);  // In this place we are setting the Adapter of a spinnerBrands, the adapter we are setting is an ArrayAdapter we have created a line before
         spinnerBrands.setOnItemSelectedListener(this);
-        db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
-
         db.collection("Brands") // We are creating the instance of a collection "Brands"
                 .get()  // Getting the instance of a collection "Brands" in an instance form
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {    // Adding an OnCompleteListener which constantly listens when a process of getting the instance is finished,
@@ -109,53 +115,164 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                     }
                 });
 
-        deviceArrayList = new ArrayList<Device>();  // In this place we are assigning the ArrayList<Device> into an earlier defined object deviceArrayList
-        recDeviceAdapter = new RecDeviceAdapter(RecurringDeviceActivity.this, deviceArrayList); // In this place we are assigning the RecDeviceAdapter provided with needed parameters to the earlier created object recDeviceAdapter
 
-        recyclerView.setAdapter(recDeviceAdapter);  // This line of code sets the adapter to the recyclerView, in other words we are connecting the backend (recDeviceAdapter), with frontend side (recyclerView)
 
         Bundle extras = getIntent().getExtras();    // We are creating an extras object (Bundle) which is a holder for our variables passed through Intents between the Activities,
                                                     // we get the data from the Intent from the extras passed in this Intent
          if (extras != null) {   // This if checks if extras are not empty (in order to prevent errors like running a method on a null variable)
-            String clientId = extras.getString("uClientId");    // Assigning a uClientId, which is a clientId of a client that a user has chosen in a RecyclerView or that was just created to a new String clientId
-            EventChangeListener(clientId);  // It is a function implemented by me in order to make the code a bit cleaner,
-                                            // this function queries through the "Devices" collection in a Firestore,
-                                            // the query has one statement - a clientId of a device must be equal to a clientId of a client that a user has chosen or that has just been created,
-                                            // this statement is done in order to display only devices belonging to the client that a user has chosen or that has just been created,
-                                            // and adds all of the results of a query (the devices owned by a client) to the deviceArrayList in order to display it in the RecyclerView
+             String clientId = extras.getString("uClientId");    // Assigning a uClientId, which is a clientId of a client that a user has chosen in a RecyclerView or that was just created to a new String clientId
+             search.setOnClickListener(new View.OnClickListener() {
+                 @Override
+                 public void onClick(View view) {
+                     deviceArrayList = new ArrayList<Device>();  // In this place we are assigning the ArrayList<Device> into an earlier defined object deviceArrayList
+                     recDeviceAdapter = new RecDeviceAdapter(RecurringDeviceActivity.this, deviceArrayList); // In this place we are assigning the RecDeviceAdapter provided with needed parameters to the earlier created object recDeviceAdapter
+                     recyclerView.setAdapter(recDeviceAdapter);  // This line of code sets the adapter to the recyclerView, in other words we are connecting the backend (recDeviceAdapter), with frontend side (recyclerView)
+                     String brandName = spinnerBrands.getSelectedItem().toString();
+                     //String modelName;
+
+                     //modelName = spinnerModels.getSelectedItem().toString();
+
+                     if (brandName.equals("none")){
+                         EventChangeListener(clientId,"allEmpty","none","none");
+                     }else if (spinnerModels.getSelectedItem().toString().equals("none")){
+                         EventChangeListener(clientId,"modelEmpty",brandName,"none");
+                     }else {
+                         EventChangeListener(clientId,"none",brandName,spinnerModels.getSelectedItem().toString());
+                     }
+
+                 }
+             });
          }
     }
 
 
-    private void EventChangeListener(String clientId) { // this function queries through the "Devices" collection in a Firestore,
+    private void EventChangeListener(String clientId, String flag, String data1, String data2) { // this function queries through the "Devices" collection in a Firestore,
                                                         // the query has one statement - a clientId of a device must be equal to a clientId of a client that a user has chosen or that has just been created,
                                                         // this statement is done in order to display only devices belonging to the client that a user has chosen or that has just been created,
                                                         // and adds all of the results of a query (the devices owned by a client) to the deviceArrayList in order to display it in the RecyclerView
+        if (flag.equals("allEmpty")){
+            db.collection("Devices")    // We are creating the instance of a collection "Devices"
+                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (devices) belonging to the collection "Devices",
+                        // and later create an if statement in order to filter the only devices belonging to a client wanted by a user
+                        @Override
+                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-        db.collection("Devices")    // We are creating the instance of a collection "Devices"
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (devices) belonging to the collection "Devices",
-                                                                            // and later create an if statement in order to filter the only devices belonging to a client wanted by a user
-                    @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
+                                Toast.makeText(RecurringDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
+                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
+                                return;
+                            }
 
-                        if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                            Toast.makeText(RecurringDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                            Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                            return;
+                            for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the devices in a document form
+                                if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of devices added to the deviceArrayList
+                                    if (dc.getDocument().getString("clientId").equals(clientId)){      // This if is the most important line of this method,
+                                        // because it filters the devices so that only devices belonging to a client (having the same clientId as a client),
+                                        // wanted by a user are displayed
+                                        deviceArrayList.add(dc.getDocument().toObject(Device.class));   // This line of code adds an iterated from a loop and filtered by an if device in an object (Device) form to the deviceArrayList
+                                    }
+                                }
+                                recDeviceAdapter.notifyDataSetChanged();    // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recDeviceAdapter)
+                            }
                         }
+                    });
+        }else if (flag.equals("modelEmpty")){
+            db.collection("Brands")
+                    .whereEqualTo("brandName", data1)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String brandId = documentSnapshot.getString("brandId");
+                                    db.collection("Models")
+                                            .whereEqualTo("brandId",brandId)
+                                            .get()
+                                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        if (task.getResult().isEmpty()) {
+                                                            Toast.makeText(RecurringDeviceActivity.this, "In this brand there are no models", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            List<String> modelsList = new ArrayList<>();
+                                                            for (QueryDocumentSnapshot documentSnapshot1 : task.getResult()) {
+                                                                modelsList.add(documentSnapshot1.getString("modelId"));
+                                                            }
+                                                            db.collection("Devices")    // We are creating the instance of a collection "Devices"
+                                                                    .whereIn("modelId",modelsList)
+                                                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (devices) belonging to the collection "Devices",
+                                                                        // and later create an if statement in order to filter the only devices belonging to a client wanted by a user
+                                                                        @Override
+                                                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
 
-                        for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the devices in a document form
-                            if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of devices added to the deviceArrayList
-                                if (dc.getDocument().getString("clientId").equals(clientId)){      // This if is the most important line of this method,
-                                                                                                        // because it filters the devices so that only devices belonging to a client (having the same clientId as a client),
-                                                                                                        // wanted by a user are displayed
-                                    deviceArrayList.add(dc.getDocument().toObject(Device.class));   // This line of code adds an iterated from a loop and filtered by an if device in an object (Device) form to the deviceArrayList
+                                                                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
+                                                                                Toast.makeText(RecurringDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
+                                                                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
+                                                                                return;
+                                                                            }
+
+                                                                            for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the devices in a document form
+                                                                                if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of devices added to the deviceArrayList
+                                                                                    if (dc.getDocument().getString("clientId").equals(clientId)){      // This if is the most important line of this method,
+                                                                                        // because it filters the devices so that only devices belonging to a client (having the same clientId as a client),
+                                                                                        // wanted by a user are displayed
+                                                                                        deviceArrayList.add(dc.getDocument().toObject(Device.class));   // This line of code adds an iterated from a loop and filtered by an if device in an object (Device) form to the deviceArrayList
+                                                                                    }
+                                                                                }
+                                                                                recDeviceAdapter.notifyDataSetChanged();    // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recDeviceAdapter)
+                                                                            }
+                                                                        }
+                                                                    });
+
+                                                        }
+                                                    }
+                                                }
+                                            });
                                 }
                             }
-                            recDeviceAdapter.notifyDataSetChanged();    // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recDeviceAdapter)
+                        }
+                    });
+        } else {
+            db.collection("Models")
+                    .whereEqualTo("modelName", data2)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()){
+                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                            String modelId = documentSnapshot.getString("modelId");
+                            db.collection("Devices")
+                                    .whereEqualTo("modelId",modelId)
+                                    .get()
+                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                if (task.getResult().isEmpty()) {
+                                                    Toast.makeText(RecurringDeviceActivity.this, "No devices with such criteria", Toast.LENGTH_SHORT).show();
+                                                }else {
+                                                    Toast.makeText(RecurringDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
+                                                    for (QueryDocumentSnapshot documentSnapshot1 : task.getResult()) {
+                                                        if (documentSnapshot1.getString("clientId").equals(clientId)){
+                                                            deviceArrayList.add(documentSnapshot1.toObject(Device.class));
+                                                            recDeviceAdapter.notifyDataSetChanged();
+                                                        }
+
+                                                    }
+
+                                                }
+                                            }
+                                        }
+                                    });
                         }
                     }
-                });
+                }
+            });
+
+        }
+
     }
 
     @Override
@@ -193,6 +310,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                                 String brandId = documentSnapshot.getString("brandId");
                                 List<String> Models = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
                                 // in order to later display them to choose from in a spinnerBrands
+                                Models.add("none");
                                 ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Models);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
                                 // we are doing it, because later we want to display all of the brands in a spinnerBrands
                                 spinnerModels.setAdapter(adapter2);  // In this place we are setting the Adapter of a spinnerBrands, the adapter we are setting is an ArrayAdapter we have created a line before

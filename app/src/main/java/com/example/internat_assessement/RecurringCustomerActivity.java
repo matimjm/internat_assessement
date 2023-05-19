@@ -56,6 +56,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
 
 
         setContentView(R.layout.activity_recurring_customer);   // This line of code sets a ContentView (a layout file (activity_recurring_customer) that will be used within the activity) for an activity we are in (RecurringCustomerActivity)
+        db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
         //toolbar stuff
         toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
@@ -86,7 +87,6 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
         search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
                 clientArrayList = new ArrayList<Client>();  // In this place we are assigning the ArrayList<Client> into an earlier defined object clientArrayList
                 recCustomerAdapter = new RecCustomerAdapter(RecurringCustomerActivity.this,clientArrayList);    // In this place we are assigning the RecCustomerAdapter provided with needed parameters to the earlier created object recCustomerAdapter
 
