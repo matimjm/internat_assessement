@@ -24,6 +24,71 @@
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/logo_mjm" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnAdd"
+            android:layout_width="206dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/orange"
+            android:text="Add"
+            android:textSize="20dp"
+            android:textColor="@color/black"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintHorizontal_bias="0.486"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/imageView"
+            app:icon="@drawable/ic_action_add"
+            app:iconTint="@color/black"
+            app:iconSize="40dp"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSearch"
+            android:layout_width="198dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/orange"
+            android:text="Search"
+            android:textSize="20dp"
+            app:icon="@drawable/ic_action_search"
+            app:iconTint="@color/black"
+            app:iconSize="40dp"
+            android:textColor="@color/black"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/btnAdd" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnCartesian"
+            android:layout_width="198dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/orange"
+            android:text="Year\nstatistics"
+            android:textSize="18dp"
+            app:icon="@drawable/ic_action_reports"
+            app:iconSize="40dp"
+            app:iconTint="@color/black"
+            android:textColor="@color/black"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPie"
+            android:layout_width="198dp"
+            android:layout_height="100dp"
+            android:backgroundTint="@color/orange"
+            android:text="Current\nstatistics"
+            android:textSize="18dp"
+            app:icon="@drawable/ic_action_reports"
+            app:iconSize="40dp"
+            app:iconTint="@color/black"
+            android:textColor="@color/black"
+            app:cornerRadius="15dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline3"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toBottomOf="@+id/btnCartesian" />
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline2"
             android:layout_width="wrap_content"
@@ -37,61 +102,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="342dp" />
-
-        <EditText
-            android:id="@+id/editTextIMEIOrSNum"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="70dp"
-            android:ems="10"
-            android:hint="IMEI or Serial Number"
-            android:inputType="textPersonName"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNewDeviceAdd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="50dp"
-            android:backgroundTint="@color/orange"
-            android:text="Add"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/btnNoModel" />
-
-        <Spinner
-            android:id="@+id/spinnerModels"
-            android:layout_width="148dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginRight="40dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextIMEIOrSNum" />
-
-        <Spinner
-            android:id="@+id/spinnerBrands"
-            android:layout_width="148dp"
-            android:layout_height="25dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginLeft="40dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/editTextIMEIOrSNum" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnNoModel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="120dp"
-            android:backgroundTint="@color/orange"
-            android:text="Can't see my model"
-            android:textColor="@color/black"
-            app:layout_constraintEnd_toStartOf="@+id/guideline3"
-            app:layout_constraintStart_toStartOf="@+id/guideline2"
-            app:layout_constraintTop_toBottomOf="@+id/editTextIMEIOrSNum" />
-
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

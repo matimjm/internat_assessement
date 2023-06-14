@@ -102,7 +102,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                                                            // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
                 }
                 else if (name_txt.isEmpty()){
-                    EventChangeListener("nameEmpty",surname_txt, "none");   // It is a function implemented by me in order to make the code a bit cleaner,
+                    EventChangeListener("nameEmpty","none", surname_txt);   // It is a function implemented by me in order to make the code a bit cleaner,
                                                             // this function queries (without one statement - in order to get all of the clients that have the surname = surname_txt from the database) through the "Clients" collection in a Firestore,
                                                             // and adds all of the results of a query (basically all of the clients having the same surname in a database) to the clientArrayList in order to display it in the RecyclerView
 
@@ -125,7 +125,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
 
 
     }
-    private void EventChangeListener(String flag,String data1,String data2) {      // This function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
+    private void EventChangeListener(String flag,String name,String surname) {      // This function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
                                                                         // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
                                                                         // It has two arguments one - String flag - which indicates us if a user has left any field open, and if so query through the one that was filled (if both were empty, do not query through anything - just show all clients)
         if (flag.equals("allEmpty")){
@@ -149,7 +149,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                     }); // The closing bracket of .addSnapshotListener
         }else if (flag.equals("nameEmpty")){
             db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .whereEqualTo("surname",data1)
+                    .whereEqualTo("surname",surname)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -170,7 +170,7 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
         }
         else if (flag.equals("surnameEmpty")){
             db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .whereEqualTo("name",data1)
+                    .whereEqualTo("name",name)
                     .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
                         @Override
                         public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
@@ -190,11 +190,11 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                     }); // The closing bracket of .addSnapshotListener
         }
         else if (flag.equals("noEmpty")){
-            System.out.println(data1);
-            System.out.println(data2);
+            System.out.println(name);
+            System.out.println(surname);
             Query query = db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .whereEqualTo("name",data1) // The first statement of a query means that we are looking for a service which has a "name" equal to the data1 (String), which is a name typed in by a user
-                    .whereEqualTo("surname",data2); // The second statement of a query means that we are also looking for a service which has a "surname" equal to the data2, which is a surname typed in by a user
+                    .whereEqualTo("name",name) // The first statement of a query means that we are looking for a service which has a "name" equal to the data1 (String), which is a name typed in by a user
+                    .whereEqualTo("surname",surname); // The second statement of a query means that we are also looking for a service which has a "surname" equal to the data2, which is a surname typed in by a user
             query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() { // This OnCompleteListener is constantly checking if a query was completed
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a query was completed the code under this method is run

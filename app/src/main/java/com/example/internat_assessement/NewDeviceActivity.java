@@ -10,10 +10,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class NewDeviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class NewDeviceActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, AdapterView.OnItemSelectedListener {
 
     // object initialization
     //toolbar stuff
@@ -37,6 +39,7 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
 
     EditText IMEIOrSNum;    // Initializing the object IMEIOrSNum (EditText), it is a component of a layout file, on which a user can enter the IMEI or a Serial Number of a new device that was brought to the client to the shop for the first time
     Spinner spinnerModels;  // Initializing the object spinnerModels (Spinner), it is a component of a layout file, where a user can choose what model is a device that just came to the shop
+    Spinner spinnerBrands;  // Initializing the object spinnerBrands (Spinner), it is a component of a layout file, where a user can choose what brand is a device that just came to the shop
     Button btnNewDeviceAdd;    // Initializing the object btnNewDeviceAdd (Button), when it is clicked the device is added to a database (if every field is filled as it should be)
     Button btnNoModel; // Initializing the object btnNoModel (Button), when it is clicked the user is redirected to a page where he can add a model that he was lacking
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
@@ -78,14 +81,16 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
             spinnerModels = findViewById(R.id.spinnerModels);   // We are connecting the earlier defined object (spinnerModels) with a component of a layout file (each component has a specified ID ('spinnerModels')
             btnNewDeviceAdd = findViewById(R.id.btnNewDeviceAdd);   // We are connecting the earlier defined object (btnNewDeviceAdd) with a component of a layout file (each component has a specified ID ('btnNewDeviceAdd')
             btnNoModel = findViewById(R.id.btnNoModel); // We are connecting the earlier defined object (btnNoModel) with a component of a layout file (each component has a specified ID ('btnNoModel')
+             spinnerBrands = findViewById(R.id.spinnerBrands);  // We are connecting the earlier defined object (spinnerBrands) with a component of a layout file (each component has a specified ID ('spinnerBrands')
 
-            List<String> Models = new ArrayList<>();    // An ArrayList Models is created in order to hold all of the models fetched from the database,
-                                                        // in order to later display them to choose from in a spinnerModels
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Models);  // An ArrayAdapter is created in this line in order to connect the spinnerModels with the Models (ArrayList),
-                                                                                                                                        // we are doing it, because later we want to display all of the models in a spinnerModels
-            spinnerModels.setAdapter(adapter);  // In this place we are setting the Adapter of a spinnerModels, the adapter we are setting is an ArrayAdapter we have created a line before
+             List<String> Brands = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
+                                                        // in order to later display them to choose from in a spinnerBrands
+             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Brands);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
+                                                                                                                                        // we are doing it, because later we want to display all of the brands in a spinnerBrands
+            spinnerBrands.setAdapter(adapter);  // In this place we are setting the Adapter of a spinnerModels, the adapter we are setting is an ArrayAdapter we have created a line before
+             spinnerBrands.setOnItemSelectedListener(this);
             db = FirebaseFirestore.getInstance();   // In here we are getting the instance of FireBaseFirestore (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
-            db.collection("Models") // We are creating the instance of a collection "Models"
+            db.collection("Brands") // We are creating the instance of a collection "Models"
                     .get()  // Getting the instance of a collection "Models" in an instance form
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {    // Adding an OnCompleteListener which constantly listens when a process of getting the instance is finished,
                                                                                         // and once it is finished we are performing a for-each loop iterating over all of the results of an instance
@@ -95,8 +100,8 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
                             if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
                                 for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the models in a Firestore database,
                                                                                             // and adds each model's name to a Models ArrayList in order to display it in a spinnerModels
-                                    String model = document.getString("modelName"); // This line of code fetches the name of a model that is currently iterated in a for-each loop into a model (String)
-                                    Models.add(model);  // The fetched name of a model is added to a Models ArrayList
+                                    String model = document.getString("brandName"); // This line of code fetches the name of a model that is currently iterated in a for-each loop into a model (String)
+                                    Brands.add(model);  // The fetched name of a model is added to a Models ArrayList
                                 }
                                 adapter.notifyDataSetChanged(); // This line of code is needed in order to notify the adapter that the DataSet has Changed (In other words it works like a refresher for an adapter of spinnerModels)
                             }
@@ -129,6 +134,8 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
 
 
                     HashMap<String, Object> device = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new device in a collection "Devices"
+
+                    String brandName = spinnerBrands.getSelectedItem().toString();
 
                     db.collection("Models") // In here we are getting the instance of collection "Models"
                             .whereEqualTo("modelName",modelName)    // This is a statement which filters the models so that the result of query is only a model chosen by a user
@@ -195,4 +202,52 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
     }
 
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        String brandName = spinnerBrands.getSelectedItem().toString();
+        db.collection("Brands")
+                .whereEqualTo("brandName", brandName)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no brands)
+                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                String brandId = documentSnapshot.getString("brandId");
+                                List<String> Models = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
+                                // in order to later display them to choose from in a spinnerBrands
+                                Models.add("none");
+                                ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Models);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
+                                // we are doing it, because later we want to display all of the brands in a spinnerBrands
+                                spinnerModels.setAdapter(adapter2);  // In this place we are setting the Adapter of a spinnerBrands, the adapter we are setting is an ArrayAdapter we have created a line before
+
+                                db.collection("Models") // We are creating the instance of a collection "Models"
+                                        .whereEqualTo("brandId",brandId)
+                                        .get()  // Getting the instance of a collection "Models" in an instance form
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {    // Adding an OnCompleteListener which constantly listens when a process of getting the instance is finished,
+                                            // and once it is finished we are performing a for-each loop iterating over all of the results of an instance
+                                            // (there is no filters so the results of completing getting the instance are all of the models in a Firestore database)
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) { // The code under this method is performed once completion is found by a OnCompleteListener
+                                                if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                        // and adds each brand's name to a Brands ArrayList in order to display it in a spinnerBrands
+                                                        String model = document.getString("modelName"); // This line of code fetches the name of a brands that is currently iterated in a for-each loop into a brand (String)
+                                                        Models.add(model);  // The fetched name of a brand is added to a Brands ArrayList
+                                                    }
+                                                    adapter2.notifyDataSetChanged(); // This line of code is needed in order to notify the adapter that the DataSet has Changed (In other words it works like a refresher for an adapter of spinnerBrands)
+                                                }
+                                            }
+                                        });
+                            }
+                        }
+                    }
+                });
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

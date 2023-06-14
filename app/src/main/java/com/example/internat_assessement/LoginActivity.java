@@ -75,7 +75,8 @@ public class LoginActivity extends AppCompatActivity {     // At this moment we 
         @Override
         public void onSuccess(AuthResult authResult) {    // If the OnSuccessListener returns a success it means that the user has inputted the valid username and password
             Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();  // a proper Toast message is shown in order to inform the user that he has been logged successfully
-            startActivity(new Intent(LoginActivity.this, CartesianChartActivity.class));  // After logging in a user is redirected into another activity (MenuActivity) from which he can start using the app
+            startActivity(new Intent(LoginActivity.this, MenuActivity.class));  // After logging in a user is redirected into another activity (MenuActivity) from which he can start using the app
+            finish();
         }   // closing bracket of onSuccess method
 
     }).addOnFailureListener(new OnFailureListener() {   // this line of code adds the OnFailureListener -
@@ -87,16 +88,17 @@ public class LoginActivity extends AppCompatActivity {     // At this moment we 
             }
         });
     }
-    @Override
-    protected void onStart() {  // These lines of code are checking if the user is already logged in when the LoginActivity is started, and if so, redirecting them to the CartesianChartActivity.
-        super.onStart(); // We are calling the superclass implementation
+    //TODO IF YOU UCOMMENT THE LINES BELOW THE USER STAYS LOGGED IN AND ONCE THE USER WAS LOGGED IN FOR THE FIRST TIME HE DOES NOT HAVE TO LOGIN ANY TIME AGAIN
+    //@Override
+    //protected void onStart() {  // These lines of code are checking if the user is already logged in when the LoginActivity is started, and if so, redirecting them to the CartesianChartActivity.
+        //super.onStart(); // We are calling the superclass implementation
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();    // A current user is retrieved from FirebaseAuth and stored in a user object (FirebaseUser)
+        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();    // A current user is retrieved from FirebaseAuth and stored in a user object (FirebaseUser)
 
-        if (user != null) { // We are checking if a user is not null - that means that there must be some user, then the equivalent code is executed
-            startActivity(new Intent(LoginActivity.this, CartesianChartActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));    // Once we checked that a user is logged in we are redirected to the CartesianChartActivity
-        }
-    }
+        //if (user != null) { // We are checking if a user is not null - that means that there must be some user, then the equivalent code is executed
+            //startActivity(new Intent(LoginActivity.this, MenuActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK));    // Once we checked that a user is logged in we are redirected to the CartesianChartActivity
+        //}
+    //}
 
 
 }

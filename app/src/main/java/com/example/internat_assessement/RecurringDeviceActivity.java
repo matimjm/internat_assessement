@@ -146,7 +146,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
     }
 
 
-    private void EventChangeListener(String clientId, String flag, String data1, String data2) { // this function queries through the "Devices" collection in a Firestore,
+    private void EventChangeListener(String clientId, String flag, String brandName, String modelName) { // this function queries through the "Devices" collection in a Firestore,
                                                         // the query has one statement - a clientId of a device must be equal to a clientId of a client that a user has chosen or that has just been created,
                                                         // this statement is done in order to display only devices belonging to the client that a user has chosen or that has just been created,
                                                         // and adds all of the results of a query (the devices owned by a client) to the deviceArrayList in order to display it in the RecyclerView
@@ -177,7 +177,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                     });
         }else if (flag.equals("modelEmpty")){
             db.collection("Brands")
-                    .whereEqualTo("brandName", data1)
+                    .whereEqualTo("brandName", brandName)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -235,7 +235,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                     });
         } else {
             db.collection("Models")
-                    .whereEqualTo("modelName", data2)
+                    .whereEqualTo("modelName", modelName)
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

@@ -90,9 +90,9 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);    // We are accessing the setter for all tooltips (positionMode) from a getter for chart tooltip and setting the position mode as POINT
 
-        cartesian.title("Number of Completed services (over a year)");  // In here we are setting the title of the line graph
+        cartesian.title("Number of Received services (over a year)");  // In here we are setting the title of the line graph
 
-        cartesian.yAxis(0).title("Number of Completed services (over a year)"); // This line of code sets the title of the axis Y
+        cartesian.yAxis(0).title("Number of Received services (over a year)"); // This line of code sets the title of the axis Y
         cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);    // In this place we are setting the space (5d) between the labels of the axis X
 
 
