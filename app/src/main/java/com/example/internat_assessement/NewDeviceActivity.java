@@ -131,49 +131,53 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
 
                     String modelName = spinnerModels.getSelectedItem().toString();  // This line of code fetches the name of a model as String into modelName String that the user has chosen in a spinner spinnerModels
 
+                    if (!IMEIOrSNum_txt.isEmpty() || !modelName.equals("none")) {
+                        HashMap<String, Object> device = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new device in a collection "Devices"
 
+                        String brandName = spinnerBrands.getSelectedItem().toString();
 
-                    HashMap<String, Object> device = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new device in a collection "Devices"
+                        db.collection("Models") // In here we are getting the instance of collection "Models"
+                                .whereEqualTo("modelName",modelName)    // This is a statement which filters the models so that the result of query is only a model chosen by a user
+                                .get()  // We are getting the results of a query as a document form
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // The OnCompleteListener is added in order to listen when the adding process was finished,
+                                    // once it was finished and a completion was returned we are running equivalent code
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {     // Once a completion was returned the code under this method is run
+                                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over the results of a query
+                                                // (if models were not duplicated by a user earlier this query should have only one result so there is only one round of a loop)
 
-                    String brandName = spinnerBrands.getSelectedItem().toString();
+                                                String modelId = documentSnapshot.getString("modelId"); // We are fetching a from a model that was chosen by a user,
+                                                // in order to save it later so that the collections are connected with each other (sth like SQL joins)
 
-                    db.collection("Models") // In here we are getting the instance of collection "Models"
-                            .whereEqualTo("modelName",modelName)    // This is a statement which filters the models so that the result of query is only a model chosen by a user
-                            .get()  // We are getting the results of a query as a document form
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // The OnCompleteListener is added in order to listen when the adding process was finished,
-                                                                                              // once it was finished and a completion was returned we are running equivalent code
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {     // Once a completion was returned the code under this method is run
-                                    if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
-                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over the results of a query
-                                                                                                            // (if models were not duplicated by a user earlier this query should have only one result so there is only one round of a loop)
+                                                device.put("modelId", modelId); // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
+                                                device.put("IMEIOrSNum", IMEIOrSNum_txt);   // This line inputs the data (key = "IMEIOrSNum" (it is a name of a field in a Firestore), value = IMEIOrSNum_txt) into the HashMap
+                                                device.put("clientId", clientId);   // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
 
-                                            String modelId = documentSnapshot.getString("modelId"); // We are fetching a from a model that was chosen by a user,
-                                                                                                         // in order to save it later so that the collections are connected with each other (sth like SQL joins)
+                                                db.collection("Devices")    // In here we are getting the instance of collection "Models"
+                                                        .document(IMEIOrSNum_txt)   // creating a document of a name of IMEI or Serial Number inputted by a user and accesing it
+                                                        .set(device)    // We are setting the HashMap as a data of a document we have accessed in a line before
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
+                                                            // once it was finished and a success was returned we are running equivalent code
+                                                            @Override
+                                                            public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
+                                                                Intent intent = new Intent(NewDeviceActivity.this, ServiceAddActivity.class);   // An Intent is created in order to later redirect the user to the ServiceAddActivity (to add the service to the newly created device)
+                                                                intent.putExtra("uIMEIOrSNum", IMEIOrSNum_txt);   // With an Intent we can pass variables, so we are passing the "uIMEIOrSNum"
+                                                                // in order to later in ServiceAddActivity show only services belonging to the newly created device (the device is newly created so no devices are shown)
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                                                startActivity(intent);  // In this case we are enabling the Intent to work
+                                                            }
+                                                        }); // The closing bracket of OnSuccessListener
+                                            }
 
-                                            device.put("modelId", modelId); // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
-                                            device.put("IMEIOrSNum", IMEIOrSNum_txt);   // This line inputs the data (key = "IMEIOrSNum" (it is a name of a field in a Firestore), value = IMEIOrSNum_txt) into the HashMap
-                                            device.put("clientId", clientId);   // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
-
-                                            db.collection("Devices")    // In here we are getting the instance of collection "Models"
-                                                    .document(IMEIOrSNum_txt)   // creating a document of a name of IMEI or Serial Number inputted by a user and accesing it
-                                                    .set(device)    // We are setting the HashMap as a data of a document we have accessed in a line before
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
-                                                                                                            // once it was finished and a success was returned we are running equivalent code
-                                                        @Override
-                                                        public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
-                                                            Intent intent = new Intent(NewDeviceActivity.this, ServiceAddActivity.class);   // An Intent is created in order to later redirect the user to the ServiceAddActivity (to add the service to the newly created device)
-                                                            intent.putExtra("uIMEIOrSNum", IMEIOrSNum_txt);   // With an Intent we can pass variables, so we are passing the "uIMEIOrSNum"
-                                                                                                                    // in order to later in ServiceAddActivity show only services belonging to the newly created device (the device is newly created so no devices are shown)
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
-                                                            startActivity(intent);  // In this case we are enabling the Intent to work
-                                                        }
-                                                    }); // The closing bracket of OnSuccessListener
                                         }
-
                                     }
-                                }
-                            }); // The closing bracket of OnCompleteListener
+                                }); // The closing bracket of OnCompleteListener
+                    } else {
+                        Toast.makeText(NewDeviceActivity.this, "Empty Credentials", Toast.LENGTH_SHORT).show();
+                    }
+
+
                 }
             }); // The closing bracket of OnClickListener
 

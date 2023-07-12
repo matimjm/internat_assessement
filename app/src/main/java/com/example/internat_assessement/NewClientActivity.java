@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.navigation.NavigationView;
@@ -77,28 +78,32 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
                 String number_txt = number.getText().toString();    // This line of code fetches the number as String into number_txt String that the user has inputted in an number EditText field
                 String name_txt = name.getText().toString();    // This line of code fetches the name as String into name_txt String that the user has inputted in an number EditText field
                 String surname_txt = surname.getText().toString();    // This line of code fetches the surname as String into surname_txt String that the user has inputted in an number EditText field
+                if (!name_txt.isEmpty() || !surname_txt.isEmpty()) {
+                    String clientId = db.collection("Clients").document().getId();  // This line of code generates a document ID without creating the actual document in a Firebase Firestore
+                    HashMap<String, Object> client = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new client in a collection "Clients"
+                    client.put("email",email_txt);  // This line inputs the data (key = "email" (it is a name of a field in a Firestore), value = email_txt) into the HashMap
+                    client.put("number",number_txt);    // This line inputs the data (key = "number" (it is a name of a field in a Firestore), value = number_txt) into the HashMap
+                    client.put("clientId",clientId);    // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
+                    client.put("name",name_txt);    // This line inputs the data (key = "name" (it is a name of a field in a Firestore), value = name_txt) into the HashMap
+                    client.put("surname",surname_txt);  // This line inputs the data (key = "surname" (it is a name of a field in a Firestore), value = surname_txt) into the HashMap
+                    db.collection("Clients")    // In here we are getting the instance of colleciton "Clients"
+                            .document(clientId) // We are accessing the document with a name of clientId
+                            .set(client)    // We are setting the HashMap as a data of a document we have accessed in a line before
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
+                                // once it was finished and a success was returned we are running equivalent code
+                                @Override
+                                public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
+                                    Intent intent = new Intent(NewClientActivity.this,DeviceAddActivity.class);  // An Intent is created in order to later redirect the user to the DeviceAddActivity (to add the device to the newly created client)
+                                    intent.putExtra("uClientId", clientId);   // With an Intent we can pass variables, so we are passing the "uClientId"
+                                    // in order to later in DeviceAddActivity show only devices belonging to the newly created client (the client is newly created so no devices are shown)
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                    startActivity(intent);  // In this case we are enabling the Intent to work
+                                }
+                            });
+                } else {
+                    Toast.makeText(NewClientActivity.this, "Empty Credentials", Toast.LENGTH_SHORT).show();
+                }
 
-                String clientId = db.collection("Clients").document().getId();  // This line of code generates a document ID without creating the actual document in a Firebase Firestore
-                HashMap<String, Object> client = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new client in a collection "Clients"
-                client.put("email",email_txt);  // This line inputs the data (key = "email" (it is a name of a field in a Firestore), value = email_txt) into the HashMap
-                client.put("number",number_txt);    // This line inputs the data (key = "number" (it is a name of a field in a Firestore), value = number_txt) into the HashMap
-                client.put("clientId",clientId);    // This line inputs the data (key = "clientId" (it is a name of a field in a Firestore), value = clientId) into the HashMap
-                client.put("name",name_txt);    // This line inputs the data (key = "name" (it is a name of a field in a Firestore), value = name_txt) into the HashMap
-                client.put("surname",surname_txt);  // This line inputs the data (key = "surname" (it is a name of a field in a Firestore), value = surname_txt) into the HashMap
-                db.collection("Clients")    // In here we are getting the instance of colleciton "Clients"
-                        .document(clientId) // We are accessing the document with a name of clientId
-                        .set(client)    // We are setting the HashMap as a data of a document we have accessed in a line before
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
-                                                                                // once it was finished and a success was returned we are running equivalent code
-                            @Override
-                            public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
-                                Intent intent = new Intent(NewClientActivity.this,DeviceAddActivity.class);  // An Intent is created in order to later redirect the user to the DeviceAddActivity (to add the device to the newly created client)
-                                intent.putExtra("uClientId", clientId);   // With an Intent we can pass variables, so we are passing the "uClientId"
-                                                                                // in order to later in DeviceAddActivity show only devices belonging to the newly created client (the client is newly created so no devices are shown)
-                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
-                                startActivity(intent);  // In this case we are enabling the Intent to work
-                            }
-                        });
 
 
 
