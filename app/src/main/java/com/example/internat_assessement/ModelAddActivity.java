@@ -14,6 +14,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -112,47 +113,49 @@ public class ModelAddActivity extends AppCompatActivity implements NavigationVie
 
                     String modelName_txt = modelName.getText().toString();  // We are fetching the name of a model that a user has typed into the modelName EditText field into a String modelName_txt
 
-                    String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
+                    if (!modelName_txt.isEmpty()) {
+                        String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
 
-                    HashMap<String,Object> model = new HashMap<>(); // A HashMap<String,Object> model is created in order to later pass it to set a new model in a collection "Models"
+                        HashMap<String,Object> model = new HashMap<>(); // A HashMap<String,Object> model is created in order to later pass it to set a new model in a collection "Models"
 
-                    db.collection("Brands") // In here we are getting the instance of collection "Brands"
-                            .whereEqualTo("brandName",brandName)    // This line of code is a filter of a query - it only lets a brand with a name equal to brandName
-                            .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // This OnCompleteListener is constantly checking if a process of getting the instance of the collection "Brands" (with a query filter applied) was completed
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
-                                    if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
-                                        for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
-                                                                                                            // a loop has only one round because there is only one result of a query, because each brand has a unique name
+                        db.collection("Brands") // In here we are getting the instance of collection "Brands"
+                                .whereEqualTo("brandName",brandName)    // This line of code is a filter of a query - it only lets a brand with a name equal to brandName
+                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // This OnCompleteListener is constantly checking if a process of getting the instance of the collection "Brands" (with a query filter applied) was completed
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
+                                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                // a loop has only one round because there is only one result of a query, because each brand has a unique name
 
-                                            String brandId = documentSnapshot.getString("brandId"); // This line of code fetches the id of a brand from a document currently iterated in a loop
+                                                String brandId = documentSnapshot.getString("brandId"); // This line of code fetches the id of a brand from a document currently iterated in a loop
 
-                                            String modelId = db.collection("Models").document().getId();    // This line of code generates a document ID without creating the actual document in a Firebase Firestore
+                                                String modelId = db.collection("Models").document().getId();    // This line of code generates a document ID without creating the actual document in a Firebase Firestore
 
-                                            model.put("brandId", brandId);  // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
-                                            model.put("modelName",modelName_txt);   // This line inputs the data (key = "modelName" (it is a name of a field in a Firestore), value = modelName_txt) into the HashMap
-                                            model.put("modelId",modelId);   // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
+                                                model.put("brandId", brandId);  // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
+                                                model.put("modelName",modelName_txt);   // This line inputs the data (key = "modelName" (it is a name of a field in a Firestore), value = modelName_txt) into the HashMap
+                                                model.put("modelId",modelId);   // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
 
-                                            db.collection("Models") // In here we are getting the instance of collection "Models"
-                                                    .document(modelId)  // This line of code creates a document in a collection "Models" with an earlier randomly generated Id
-                                                    .set(model) // In here we are setting the fields of a newly added model
-                                                    .addOnSuccessListener(new OnSuccessListener<Void>() {   // This OnSuccessListener is constantly checking if a process of adding a new model and setting its fields was a success
-                                                        @Override
-                                                        public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
-                                                            Intent intent = new Intent(ModelAddActivity.this, NewDeviceActivity.class); // An Intent is created in order to later redirect the user to the NewDeviceActivity (to add the brand a user is lacking)
-                                                            intent.putExtra("uClientId", clientId); // As an Extra we are passing a clientId in order to later be able to display only devices belonging to a specific client
+                                                db.collection("Models") // In here we are getting the instance of collection "Models"
+                                                        .document(modelId)  // This line of code creates a document in a collection "Models" with an earlier randomly generated Id
+                                                        .set(model) // In here we are setting the fields of a newly added model
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {   // This OnSuccessListener is constantly checking if a process of adding a new model and setting its fields was a success
+                                                            @Override
+                                                            public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
+                                                                Intent intent = new Intent(ModelAddActivity.this, NewDeviceActivity.class); // An Intent is created in order to later redirect the user to the NewDeviceActivity (to add the brand a user is lacking)
+                                                                intent.putExtra("uClientId", clientId); // As an Extra we are passing a clientId in order to later be able to display only devices belonging to a specific client
 
-                                                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
-                                                            startActivity(intent);  // In this case we are enabling the Intent to work
-                                                        }
-                                                    });
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                                                startActivity(intent);  // In this case we are enabling the Intent to work
+                                                            }
+                                                        });
 
+                                            }
                                         }
                                     }
-                                }
-                            });
-
-
+                                });
+                    }else {
+                        Toast.makeText(ModelAddActivity.this, "Model name cannot be empty!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             });
         }

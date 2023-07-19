@@ -119,7 +119,9 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
             @Override
             public void onSelectedDayChange(@NonNull CalendarView calendarView, int i, int i1, int i2) {    //i is a year i1 is a month and i2 is a day
                 selectedDate = (i) + "-" + (i1+1) + "-" + i2;  // in this place we are changing the selectedDate to the date that the user has chosen, year, month, day is divided by the dash in order to later convert it into a DateFormat
+                System.out.println(selectedDate + " THIS IS BEFORE");
                 selectedDate = toDateFormat(selectedDate);  // In this place we are converting the selectedDate (String) into a DateFormat
+                System.out.println(selectedDate + " THIS IS AFTER");
                 Toast.makeText(QueryActivity.this, selectedDate + " was selected", Toast.LENGTH_SHORT).show();    // This Toast message shows the user the date he has selected, to make sure that it was selected successfully
             }
         });
@@ -158,7 +160,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                 }
                             }
                         }); // Closing bracket of the OnCompleteListener
-                    }else if(sortType.equals("by date (from the oldest)")) {    // This if checks by which type of sorting we are going to sort our results of a query, in this case if the statement of this if is true we are going to sort "by date (from the oldest)"
+                    }else {    // This if checks by which type of sorting we are going to sort our results of a query, in this case if the statement of this if is true we are going to sort "by date (from the oldest)"
                         Query query = db.collection("Services") // We are creating a query which will be looking through the collection "Services" in a database, in a query if we have multiple statements all the results must meet the conditions stated in all the statements
                                 .whereEqualTo("status",status)  // The first statement of a query means that we are looking for a service which has a "status" equal to the status (String) selected by a user earlier in spinnerStatus
                                 .orderBy("timestamp", Query.Direction.ASCENDING);   // The second statement of a query means that we are going to order the results of a query in a ASCENDING order, which means that the oldest ones will be shown first
@@ -202,7 +204,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
                                 }
                             }
                         });
-                    }else if(sortType.equals("by date (from the oldest)")){ // This if checks by which type of sorting we are going to sort our results of a query, in this case if the statement of this if is true we are going to sort "by date (from the oldest)"
+                    }else{ // This else checks by which type of sorting we are going to sort our results of a query, in this case if the statement of this we are going to sort "by date (from the oldest)"
                         Query query = db.collection("Services") // We are creating a query which will be looking through the collection "Services" in a database, in a query if we have multiple statements all the results must meet the conditions stated in all the statements
                                 .whereEqualTo("status",status)  // The first statement of a query means that we are looking for a service which has a "status" equal to the status (String) selected by a user earlier in spinnerStatus
                                 .whereEqualTo("date",selectedDate)  // The second statement of a query means that we are also looking for a service which has a "date" equal to the selectedDate, which was selected by a user earlier in a calendarView

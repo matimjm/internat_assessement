@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.view.MenuItem;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -115,9 +117,23 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
                                                     if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost)
                                                         for (QueryDocumentSnapshot document : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
                                                                                                                     // a loop has only one round because there is only one result of a query, because each client has a unique clientId
+                                                            String email  = document.getString("email");    // In this place we are fetching the email of a client
                                                             String number = document.getString("number");   // In this place we are fetching the phone number of a client
                                                             String messageToSend = "Your service status has changed (from " + status_txt + " to " + status + ")";   // This line of code creates a message that we want to send to a client in order to inform him about the change of a status of a service
-                                                            SmsManager.getDefault().sendTextMessage(number,null,messageToSend,null,null);   // This line of code accesses the SMS app in the phone and sends an SMS message that we have prepared a line before
+
+                                                            if (!number.isEmpty()){
+                                                                SmsManager.getDefault().sendTextMessage(number,null,messageToSend,null,null);   // This line of code accesses the SMS app in the phone and sends an SMS message that we have prepared a line before
+                                                            }else if (!email.isEmpty()){
+                                                                Intent intent = new Intent(Intent.ACTION_SEND);
+                                                                intent.putExtra(Intent.EXTRA_EMAIL,new String[]{email});
+                                                                intent.putExtra(Intent.EXTRA_SUBJECT,"Your service status has changed!");
+                                                                intent.putExtra(Intent.EXTRA_TEXT,messageToSend);
+                                                                intent.setType("message/rfc822");
+                                                                startActivity(intent);
+                                                            }else {
+                                                                Toast.makeText(ServiceDetailsActivity.this, "Too little client data to send notification", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                            //TODO do an email sending here also
                                                         }
                                                     }
                                                 }
@@ -129,21 +145,22 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
 
 
 
-                            switch (comingFrom) {   // In this case we have two options - one we are coming from a QueryActivity and then we want to come back to the QueryActivity,
+                            //switch (comingFrom) {   // In this case we have two options - one we are coming from a QueryActivity and then we want to come back to the QueryActivity,
                                                     // And second option is that we are coming from ServiceInDeviceActivity and then after we changed the status we want to come back to the ServiceInDeviceActivity
-                                case "QueryActivity":   // When we are coming from QueryActivity equivalent code under this case is run
-                                    Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);    // We are creating an intent in order to later redirect a user to the QueryActivity
-                                    startActivity(intent);  // In this case we are enabling the Intent to work
-                                    break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-                                case "ServiceInDeviceActivity": // When we are coming from ServiceInDeviceActivity equivalent code under this case is run
-                                    Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class); // We are creating an intent in order to later redirect a user to the ServiceInDeviceActivity
-                                    intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);    // As well we have to pass the IMEIOrSNum in order to know that the only services we want to see are those from the device with the specified IMEI or Serial Number
-                                    startActivity(intent1);  // In this case we are enabling the Intent to work
-                                    break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-                            }
+                                //case "QueryActivity":   // When we are coming from QueryActivity equivalent code under this case is run
+                                    //Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);    // We are creating an intent in order to later redirect a user to the QueryActivity
+                                    //startActivity(intent);  // In this case we are enabling the Intent to work
+                                    //break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+                                //case "ServiceInDeviceActivity": // When we are coming from ServiceInDeviceActivity equivalent code under this case is run
+                                    //Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class); // We are creating an intent in order to later redirect a user to the ServiceInDeviceActivity
+                                    //intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);    // As well we have to pass the IMEIOrSNum in order to know that the only services we want to see are those from the device with the specified IMEI or Serial Number
+                                    //startActivity(intent1);  // In this case we are enabling the Intent to work
+                                    //break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
+                            //}
 
 
                         }
+
                     });
                 }
             });

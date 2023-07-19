@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:title="@string/services">
+    <item android:title="Hello user!">
         <menu>
             <item android:title="@string/sort"
                 android:icon="@drawable/ic_action_search"
@@ -12,11 +12,11 @@
             <item
                 android:id="@+id/completedServices"
                 android:icon="@drawable/ic_action_reports"
-                android:title="@string/completed_services" />
+                android:title="ANNUAL STATS" />
             <item
                 android:id="@+id/allServices"
                 android:icon="@drawable/ic_action_reports"
-                android:title="@string/all_services" />
+                android:title="CURRENT STATS" />
         </menu>
     </item>
 

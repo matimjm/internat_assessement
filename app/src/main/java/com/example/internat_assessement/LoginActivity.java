@@ -33,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {     // At this moment we 
     @Override
     protected void onCreate(Bundle savedInstanceState) {    /* A typical method for Android Studio
                                                                it is used in every activity and is executed while the activity is running*/
+
         super.onCreate(savedInstanceState);                 // This line initializes the activity and restores its previous state, if any.
 
 

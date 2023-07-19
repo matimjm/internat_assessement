@@ -128,9 +128,6 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                      recDeviceAdapter = new RecDeviceAdapter(RecurringDeviceActivity.this, deviceArrayList); // In this place we are assigning the RecDeviceAdapter provided with needed parameters to the earlier created object recDeviceAdapter
                      recyclerView.setAdapter(recDeviceAdapter);  // This line of code sets the adapter to the recyclerView, in other words we are connecting the backend (recDeviceAdapter), with frontend side (recyclerView)
                      String brandName = spinnerBrands.getSelectedItem().toString();
-                     //String modelName;
-
-                     //modelName = spinnerModels.getSelectedItem().toString();
 
                      if (brandName.equals("none")){
                          EventChangeListener(clientId,"allEmpty","none","none");
