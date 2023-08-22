@@ -19,43 +19,34 @@ public class Client {   // Client is a model class, which we use for defining th
     }
 
     public String getSurname() {
-        return surname;
-    }
-
+    return surname;
+}
     public void setSurname(String surname) {
         this.surname = surname;
     }
-
     public String getName() {
         return name;
     }
-
     public void setName(String name) {
         this.name = name;
     }
-
     public String getEmail() {  // The getter of an object email
         return email;
     }
-
     public void setEmail(String email) {    // The setter of an object email
         this.email = email;
     }
-
     public String getNumber() { // The getter of an object number
         return number;
     }
-
     public void setNumber(String number) {  // The setter of an object number
         this.number = number;
     }
-
     public String getClientId() {   // The getter of an object clientId, it is used in the case of getting the clientId when a user clicked on a client,
-                                    // in order to pass the clientId for the Intent in order to later,
-                                    // in DeviceAddActivity query for only the devices belonging to the client that the user has chosen
+        // in order to pass the clientId for the Intent in order to later,
+        // in DeviceAddActivity query for only the devices belonging to the client that the user has chosen
         return clientId;
     }
-
     public void setClientId(String clientId) {  // The setter of an object clientId
         this.clientId = clientId;
     }

@@ -125,7 +125,7 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
             btnNewDeviceAdd.setOnClickListener(new View.OnClickListener() { // We are setting the OnClickListener to the btnNewDeviceAdd, in order to constantly listen when the button was click,
                                                                             // and when it was clicked execute equivalent code
                 @Override
-                public void onClick(View view) {    // The code under this method is executed once the btnNoModel button is clicked
+                public void onClick(View view) {    // The code under this method is executed once the btnNewDeviceAdd button is clicked
 
                     String IMEIOrSNum_txt = IMEIOrSNum.getText().toString();    // This line of code fetches the IMEI or Serial Number as String into IMEIOrSNum_txt String that the user has inputted in an IMEIOrSNum EditText field
 
@@ -133,8 +133,6 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
 
                     if (!IMEIOrSNum_txt.isEmpty() || !modelName.equals("none")) {
                         HashMap<String, Object> device = new HashMap<>();   // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new device in a collection "Devices"
-
-                        String brandName = spinnerBrands.getSelectedItem().toString();
 
                         db.collection("Models") // In here we are getting the instance of collection "Models"
                                 .whereEqualTo("modelName",modelName)    // This is a statement which filters the models so that the result of query is only a model chosen by a user
@@ -169,7 +167,6 @@ public class NewDeviceActivity extends AppCompatActivity implements NavigationVi
                                                             }
                                                         }); // The closing bracket of OnSuccessListener
                                             }
-
                                         }
                                     }
                                 }); // The closing bracket of OnCompleteListener

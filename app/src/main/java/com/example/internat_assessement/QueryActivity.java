@@ -41,7 +41,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
     Spinner spinnerStatus;  // Initializing the object spinnerStatus (Spinner), it is a component of a layout file where the user can specify the status with which a service is being looked for by a user
     RecyclerView recyclerView;  // Initializing the object recyclerView (RecyclerView), which is a window in our layout file in which all the services that are a result of a query are shown
     ArrayList<Service> serviceArrayListQuery;   // Initializing the object serviceArrayListQuery (ArrayList<Service>), it is an array containing the services which are the result of a query, this array is used to pass all the services to the RecyclerView so that they can be shown to the user
-    ServiceQueryAdapter serviceQueryAdapter;  // Initializing the object serviceQueryAdapter (ServiceQueryAdapter), which is a piece of code created especially for the RecyclerView (it is basically the backend of RecyclerView), more information on how it works is provided in the ServiceQueryAdapter Class
+    ServiceInDeviceAdapter serviceQueryAdapter;  // Initializing the object serviceQueryAdapter (ServiceQueryAdapter), which is a piece of code created especially for the RecyclerView (it is basically the backend of RecyclerView), more information on how it works is provided in the ServiceQueryAdapter Class
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
     String sortType;    // Initializing the object sortType (String), which is later used to fetch the selected sorting type ("by date (from the latest)" or "by date (from the oldest)")
     String status; // Initializing the object status (String), which is later used to fetch the selected status to query by the user
@@ -133,7 +133,7 @@ public class QueryActivity extends AppCompatActivity implements NavigationView.O
 
 
                 serviceArrayListQuery = new ArrayList<Service>();   // In this place we are assigning the ArrayList<Service> into an earlier defined object serviceArrayListQuery
-                serviceQueryAdapter = new ServiceQueryAdapter(QueryActivity.this, serviceArrayListQuery); // In this place we are assigning the ServiceQueryAdapter(QueryActivity.this, serviceArrayListQuery) into an earlier defined object
+                serviceQueryAdapter = new ServiceInDeviceAdapter(QueryActivity.this,serviceArrayListQuery); // In this place we are assigning the ServiceQueryAdapter(QueryActivity.this, serviceArrayListQuery) into an earlier defined object
 
                 recyclerView.setAdapter(serviceQueryAdapter);    // In this place we are setting the earlier created adapter into a recyclerView
 

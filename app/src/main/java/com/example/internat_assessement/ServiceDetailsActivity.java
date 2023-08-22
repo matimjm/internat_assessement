@@ -123,6 +123,7 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
 
                                                             if (!number.isEmpty()){
                                                                 SmsManager.getDefault().sendTextMessage(number,null,messageToSend,null,null);   // This line of code accesses the SMS app in the phone and sends an SMS message that we have prepared a line before
+                                                                Toast.makeText(ServiceDetailsActivity.this, "Client SMS notification sent", Toast.LENGTH_SHORT).show();
                                                             }else if (!email.isEmpty()){
                                                                 Intent intent = new Intent(Intent.ACTION_SEND);
                                                                 intent.putExtra(Intent.EXTRA_EMAIL,new String[]{email});
@@ -133,7 +134,7 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
                                                             }else {
                                                                 Toast.makeText(ServiceDetailsActivity.this, "Too little client data to send notification", Toast.LENGTH_SHORT).show();
                                                             }
-                                                            //TODO do an email sending here also
+
                                                         }
                                                     }
                                                 }
@@ -142,25 +143,7 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
                                     }
                                 }
                             });
-
-
-
-                            //switch (comingFrom) {   // In this case we have two options - one we are coming from a QueryActivity and then we want to come back to the QueryActivity,
-                                                    // And second option is that we are coming from ServiceInDeviceActivity and then after we changed the status we want to come back to the ServiceInDeviceActivity
-                                //case "QueryActivity":   // When we are coming from QueryActivity equivalent code under this case is run
-                                    //Intent intent = new Intent(ServiceDetailsActivity.this,QueryActivity.class);    // We are creating an intent in order to later redirect a user to the QueryActivity
-                                    //startActivity(intent);  // In this case we are enabling the Intent to work
-                                    //break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-                                //case "ServiceInDeviceActivity": // When we are coming from ServiceInDeviceActivity equivalent code under this case is run
-                                    //Intent intent1 = new Intent(ServiceDetailsActivity.this,ServiceInDeviceActivity.class); // We are creating an intent in order to later redirect a user to the ServiceInDeviceActivity
-                                    //intent1.putExtra("uIMEIOrSNum", IMEIOrSNum);    // As well we have to pass the IMEIOrSNum in order to know that the only services we want to see are those from the device with the specified IMEI or Serial Number
-                                    //startActivity(intent1);  // In this case we are enabling the Intent to work
-                                    //break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-                            //}
-
-
                         }
-
                     });
                 }
             });

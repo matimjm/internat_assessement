@@ -103,10 +103,6 @@ public class NewClientActivity extends AppCompatActivity implements NavigationVi
                 } else {
                     Toast.makeText(NewClientActivity.this, "Empty Credentials", Toast.LENGTH_SHORT).show();
                 }
-
-
-
-
             }
         });
     }

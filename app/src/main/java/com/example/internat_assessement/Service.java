@@ -1,7 +1,6 @@
 package com.example.internat_assessement;
 
 import com.google.firebase.Timestamp;
-import com.google.firebase.firestore.FieldValue;
 
 public class Service {  // Service is a model class, which we use for defining the objects of devices,
                         // it holds the constructor, getters and setters that are required for a model class to be a model class,

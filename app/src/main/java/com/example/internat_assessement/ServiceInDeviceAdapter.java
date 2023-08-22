@@ -69,8 +69,6 @@ public class ServiceInDeviceAdapter extends RecyclerView.Adapter<ServiceInDevice
                 holder.itemView.getContext().startActivity(intent); // In this case we are enabling the Intent to work getting the context of the holder.itemView which is basically the Activity we are currently in
             }
         });
-
-
     }
 
     @Override

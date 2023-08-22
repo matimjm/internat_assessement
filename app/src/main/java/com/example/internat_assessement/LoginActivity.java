@@ -15,7 +15,6 @@ import com.google.android.gms.tasks.OnFailureListener; //
 import com.google.android.gms.tasks.OnSuccessListener;  //
 import com.google.firebase.auth.AuthResult;             //  In here we import all necessary modules, libraries, packages
 import com.google.firebase.auth.FirebaseAuth;           //
-import com.google.firebase.auth.FirebaseUser;           //
 
 public class LoginActivity extends AppCompatActivity {     // At this moment we define a main class of the activity, it holds the definitions of objects and the variety of classes,
                                                             // Generally speaking this activity works as backend for our layout file (activity_login.xml),
@@ -36,17 +35,13 @@ public class LoginActivity extends AppCompatActivity {     // At this moment we 
 
         super.onCreate(savedInstanceState);                 // This line initializes the activity and restores its previous state, if any.
 
-
-
-
-
         setContentView(R.layout.activity_login);            // This line of code sets a ContentView (a layout file (activity_login) that will be used within the activity) for an activity we are in (LoginActivity),
+
+        auth = FirebaseAuth.getInstance();                  // In here we are getting the instance of FireBaseAuth (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
         username = findViewById(R.id.editTextTextUsername); // We are connecting the earlier defined object (username) with a component of a layout file (each component has a specified ID ('editTextTextUsername')
         password = findViewById(R.id.editTextTextPassword); // We are connecting the earlier defined object (password) with a component of a layout file (each component has a specified ID ('editTextTextPassword')
         btnLogin = findViewById(R.id.btnLogin);             // We are connecting the earlier defined object (btnLogin) with a component of a layout file (each component has a specified ID ('btnLogin')
-
-        auth = FirebaseAuth.getInstance();                  // In here we are getting the instance of FireBaseAuth (In Firebase the project of Android Studio is added as an app, so the instance is found without errors)
 
         btnLogin.setOnClickListener(new View.OnClickListener() {    // In here we set something like an event listener for a btnLogin (Button),
                                                                     // it is constantly checking if the button was clicked and if it was clicked the onClick method is run

@@ -54,7 +54,7 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
         holder.number.setText(client.number);   // Having the object client we can fetch the data that is held in it in order to set the fields in our holder,
                                                 // this line of code sets the number field in a holder with a fetched number from the client
         holder.name.setText(client.name + " " + client.surname);   // Having the object client we can fetch the data that is held in it in order to set the fields in our holder,
-                                                    // this line of code sets the clientId field in a holder with a fetched clientId from the client
+                                                    // this line of code sets the name and surname field in a holder with a fetched name and surname from the client
         holder.itemView.setOnClickListener(new View.OnClickListener() { // In this place we are setting the OnClickListener that is required to perform equivalent code
                                                                         // once the user has clicked on one of the items of an array displayed on the RecyclerView
             @Override
@@ -66,9 +66,6 @@ public class RecCustomerAdapter extends RecyclerView.Adapter<RecCustomerAdapter.
                 holder.itemView.getContext().startActivity(intent); // In this case we are enabling the Intent to work getting the context of the holder.itemView which is basically the Activity we are currently in
             }
         });
-
-
-
     }
 
     @Override

@@ -122,7 +122,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                                     @Override
                                                     public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
                                                         Toast.makeText(NewServiceActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();   // Through this Toast message we want to inform a user that a service was added successfully
-                                                        startActivity(new Intent(NewServiceActivity.this, CartesianChartActivity.class));   // Once a service was added the user is redirected to the place where the application starts (CartesianChartActivity)
+                                                        startActivity(new Intent(NewServiceActivity.this, MenuActivity.class));   // Once a service was added the user is redirected to the place where the application starts (MenuActivity)
                                                     }
                                                 });
                                     }else { // If this else triggers it means that the we are not adding the service to the device for the first time and some services exist already in the database
@@ -167,7 +167,7 @@ public class NewServiceActivity extends AppCompatActivity implements NavigationV
                                                         @Override
                                                         public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
                                                             Toast.makeText(NewServiceActivity.this, "Added successfully", Toast.LENGTH_SHORT).show();   // Through this Toast message we want to inform a user that a service was added successfully
-                                                            startActivity(new Intent(NewServiceActivity.this, CartesianChartActivity.class));   // Once a service was added the user is redirected to the place where the application starts (CartesianChartActivity)
+                                                            startActivity(new Intent(NewServiceActivity.this, MenuActivity.class));   // Once a service was added the user is redirected to the place where the application starts (MenuActivity)
                                                         }
                                                     });
                                         }

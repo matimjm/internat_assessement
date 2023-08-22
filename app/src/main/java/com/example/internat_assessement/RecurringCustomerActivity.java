@@ -94,8 +94,6 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
 
                 String name_txt = name.getText().toString();
                 String surname_txt = surname.getText().toString();
-                System.out.println(name_txt);
-                System.out.println(surname_txt);
                 if (name_txt.isEmpty() && surname_txt.isEmpty()){
                     EventChangeListener("allEmpty","none", "none");  // It is a function implemented by me in order to make the code a bit cleaner,
                                                            // this function queries (without any statements - in order to get all of the clients from the database) through the "Clients" collection in a Firestore,
@@ -140,7 +138,8 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                                 return;
                             }
                             for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
+                                if (dc.getType() == DocumentChange.Type.ADDED){ // Check to see if the type of the document change is DocumentChange.Type.ADDED.
+                                                                                // If it is, then the client object from the document is added to the clientArrayList.
                                     clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
                                 }
                                 recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
