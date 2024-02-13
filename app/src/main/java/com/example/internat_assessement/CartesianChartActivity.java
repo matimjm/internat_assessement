@@ -40,7 +40,6 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
                                                                                                                     // which is a page in which the user basically can see all the important statistics regarding its completed services in a cartesian chart form
     // object initialization
     private AnyChartView cartesianChartView;  // Initializing the object AnyChartView (cartesianChartView)
-    private AnyChartView pieChartView;  // Initializing the object AnyChartView (pieChartView)
     FirebaseFirestore db;   // Initializing the object of a database db (FirebaseFirestore), which is later used in order to access the database
     int countJan = 0;   // Initializing and setting to 0 the countJan (the amount of services completed in January)
     int countFeb = 0;   // Initializing and setting to 0 the countFeb (the amount of services completed in February)
@@ -54,9 +53,6 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
     int countOct = 0;   // Initializing and setting to 0 the countOct (the amount of services completed in October)
     int countNov = 0;   // Initializing and setting to 0 the countNov (the amount of services completed in November)
     int countDec = 0;   // Initializing and setting to 0 the countDec (the amount of services completed in December)
-    int countReceived = 0;  // Initializing and setting to 0 the countReceived (the amount of services that currently have status = "received" in a database)
-    int countInProgress = 0;    // Initializing and setting to 0 the countInProgress (the amount of services that currently have status = "in progress" in a database)
-    int countReadyToPickup = 0; // Initializing and setting to 0 the countReadyToPickup (the amount of services that currently have status = "ready to pickup" in a database)
     // toolbar stuff
     private Toolbar toolbar;    // Initializing the object toolbar (Toolbar), which is later used to be passed as a parameter in the ActionBarDrawerToggle
                                 // it is a navigation bar through which a user can navigate over the app (reports page, add page, find page)
@@ -92,18 +88,13 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
 
         cartesian.title("Number of Received services (over a year)");  // In here we are setting the title of the line graph
 
-        cartesian.yAxis(0).title("Number of Received services (over a year)"); // This line of code sets the title of the axis Y
+        cartesian.yAxis(0).title("Number of Completed services (over a year)"); // This line of code sets the title of the axis Y
         cartesian.xAxis(0).labels().padding(5d, 5d, 5d, 5d);    // In this place we are setting the space (5d) between the labels of the axis X
 
 
         LocalDate date = LocalDate.now();   // Fetching the current date, in an object date (LocalDate)
-        String[] dateList = date.toString().split("-");    // Getting a string from an object date,
-                                                                // then this string is split into year, month, day,
-                                                                // and then it is put into a one-dimensional array of Strings dateList
+        String[] dateList = date.toString().split("-");
         String year = dateList[0];  // From the dateList we are fetching the String of the current year which is at index 0
-
-        //TODO MAKE THE "MONTH_YEAR" THE MONTH OF COMPLETION OF THE SERVICE AND NOT JUST THE MONTH OF THE CREATION OF A SERVICE, BECAUSE IT DOES NOT MAKE SENSE
-
 
         Query jan = db.collection("Services")   // The initialization of query (Query) jan and setting that the collection we are going to query is "Services"
                 .whereEqualTo("month_year","01_"+year)   // Query's statement that finds all the documents having "month_year" equal to "01_" + the current year,
@@ -120,8 +111,29 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
         Query may = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
                 .whereEqualTo("month_year","05_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
                 .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query jun = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","06_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query jul = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","07_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query aug = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","08_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query sep = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","09_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query oct = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","10_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query nov = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","11_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
+        Query dec = db.collection("Services")   // The initialization of query (Query) may and setting that the collection we are going to query is "Services"
+                .whereEqualTo("month_year","12_"+year) // Query's statement that finds all the documents having "month_year" equal to "05_" + the current year
+                .whereEqualTo("status","completed");   // what means that it finds all the services created in May in the current year
 
-        Task<List<Task<?>>> cartesian_query = Tasks.whenAllComplete(jan.get(), feb.get(), mar.get(), apr.get(), may.get()) // This line of code is basically fetching the results of all earlier defined queries
+        Task<List<Task<?>>> cartesian_query = Tasks.whenAllComplete(jan.get(), feb.get(), mar.get(), apr.get(), may.get(), jun.get(), jul.get(), aug.get(), sep.get(), oct.get(), nov.get(), dec.get()) // This line of code is basically fetching the results of all earlier defined queries
                 .addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {    // onCompleteListener is a thing that is needed to be added,
                                                                                     // so that we can know when the process of fetching the results is completed
                     @Override
@@ -133,29 +145,34 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
                                 snapshots.add(((QuerySnapshot) t.getResult())); // In this place we are adding a result of a query as a snapshot to the snapshots ArrayList
                             }
                         }
-
-
                         countJan = snapshots.get(0).size(); // Having the snapshots added we can now fetch the size of January snapshot, the size of a snapshot is a number of services held in it
                         countFeb = snapshots.get(1).size(); // Having the snapshots added we can now fetch the size of February snapshot, the size of a snapshot is a number of services held in it
                         countMar = snapshots.get(2).size(); // Having the snapshots added we can now fetch the size of March snapshot, the size of a snapshot is a number of services held in it
                         countApr = snapshots.get(3).size(); // Having the snapshots added we can now fetch the size of April snapshot, the size of a snapshot is a number of services held in it
                         countMay = snapshots.get(4).size(); // Having the snapshots added we can now fetch the size of May snapshot, the size of a snapshot is a number of services held in it
-
-                        System.out.println(countMay);
-
+                        countJun = snapshots.get(5).size();
+                        countJul = snapshots.get(6).size();
+                        countAug = snapshots.get(7).size();
+                        countSep = snapshots.get(8).size();
+                        countOct = snapshots.get(9).size();
+                        countNov = snapshots.get(10).size();
+                        countDec = snapshots.get(11).size();
                         List<DataEntry> seriesData = new ArrayList<>(); // In here we are creating an ArrayList<DataEntry> that will be later passed as a data to the chart
                         seriesData.add(new CustomDataEntry("January", countJan));   // Adding the amount of services in January as a data to the seriesData ArrayList
                         seriesData.add(new CustomDataEntry("February", countFeb));  // Adding the amount of services in February as a data to the seriesData ArrayList
                         seriesData.add(new CustomDataEntry("March", countMar));     // Adding the amount of services in March as a data to the seriesData ArrayList
                         seriesData.add(new CustomDataEntry("April", countApr));     // Adding the amount of services in April as a data to the seriesData ArrayList
                         seriesData.add(new CustomDataEntry("May", countMay));       // Adding the amount of services in May as a data to the seriesData ArrayList
+                        seriesData.add(new CustomDataEntry("June", countJun));
+                        seriesData.add(new CustomDataEntry("July", countJul));
+                        seriesData.add(new CustomDataEntry("August", countAug));
+                        seriesData.add(new CustomDataEntry("September", countSep));
+                        seriesData.add(new CustomDataEntry("October", countOct));
+                        seriesData.add(new CustomDataEntry("November", countNov));
+                        seriesData.add(new CustomDataEntry("December", countDec));
                         Set set = Set.instantiate();    // This line of code creates a new instance of the Set class using the instantiate() method, which is provided by the AnyChart library in an Android Studio project.
                         set.data(seriesData);   // Setting the data from the Arraylist<DataEntry> seriesData to the object set
                         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'value' }");   // Creating the way the chart is going to be mapped
-
-                        //Mapping series2Mapping = set.mapAs("{ x: 'x', value: 'value2' }");
-                        //Mapping series3Mapping = set.mapAs("{ x: 'x', value: 'value3' }");
-
                         Line series1 = cartesian.line(series1Mapping);  // Setting the mapping of the chart
                         series1.name("Completed");  // Setting the name of the line in a graph (it is "Completed", because the graph displays the number of completed services that were initialized in each of the months)
                         series1.hovered().markers().enabled(true);  // This code enables the display of markers on data points in series1 when the series is being hovered over.
@@ -168,30 +185,6 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
                                 .offsetX(5d)
                                 .offsetY(5d);
 
-                        //Line series2 = cartesian.line(series2Mapping);
-                        //series2.name("Whiskey");
-                        //series2.hovered().markers().enabled(true);
-                        //series2.hovered().markers()
-                        //        .type(MarkerType.CIRCLE)
-                        //        .size(4d);
-                        //series2.tooltip()
-                        //        .position("right")
-                        //        .anchor(Anchor.LEFT_CENTER)
-                        //        .offsetX(5d)
-                        //        .offsetY(5d);
-
-                        //Line series3 = cartesian.line(series3Mapping);
-                        //series3.name("Tequila");
-                        //series3.hovered().markers().enabled(true);
-                        //series3.hovered().markers()
-                        //        .type(MarkerType.CIRCLE)
-                        //        .size(4d);
-                        //series3.tooltip()
-                        //        .position("right")
-                        //        .anchor(Anchor.LEFT_CENTER)
-                        //        .offsetX(5d)
-                        //        .offsetY(5d);
-
                         cartesian.legend().enabled(true);   // In this place we are turning on (true) the legend so that it is visible under the chart
                         cartesian.legend().fontSize(13d);   // Adding some styling to the legend (size of a font)
                         cartesian.legend().padding(0d, 0d, 10d, 0d);    // This code sets the padding of the legend on the Cartesian chart with values for top, right, bottom, and left sides respectively, leaving extra space at the bottom of the legend.
@@ -199,8 +192,6 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
                         cartesianChartView.setChart(cartesian);   // In this place we are setting the chart (cartesian) that we have been defining in the lines of code before to the object cartesianChartView that was also defined earlier
                     }   // The ending bracket of onComplete method
                 }); // The ending brackets of .addOnCompleteListener method
-
-        //TODO MAKE THE CHART A SCROLLABLE THING AND ADD ANOTHER CHART (PIE CHART INDICATING CURRENT % OF INPROGRESS, RECEIVED, READY TO PICKUP)
 
 
 
@@ -250,8 +241,6 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
 
         CustomDataEntry(String x, Number value) { // The first parameter (x) is a name of a month e.g. ("February") and the second parameter is a number (value) of services completed in such month
             super(x, value);
-            //setValue("value2", value2);
-            //setValue("value3", value3);
         }
 
     }
@@ -261,25 +250,19 @@ public class CartesianChartActivity extends AppCompatActivity implements Navigat
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         System.out.println(id);
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(CartesianChartActivity.this, QueryActivity.class));  // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(CartesianChartActivity.this, CustomerAddActivity.class));    // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of completed services
+            case 2131296410: //Numeric id of completed services
                 startActivity(new Intent(CartesianChartActivity.this, CartesianChartActivity.class));   // If a completed button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(CartesianChartActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
-        /*TODO ADD A CLIENT QUERY (QUERY BY PHONE NUMBER OR EMAIL), IN A RECURRING CLIENTS LIST,
-         *  */
-        /*TODO ADD A DEVICE QUERY (QUERY BY IMEIOrSNum), IN A RECURRING DEVICES LIST,
-         *   */
-        /*TODO MAKE A CHART OF the phone that breakes the most, because i am holding data without the use (I sent a graph screenshot to discord)
-         */
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 

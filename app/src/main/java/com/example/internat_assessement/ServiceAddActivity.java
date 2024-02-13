@@ -85,16 +85,16 @@ public class ServiceAddActivity extends AppCompatActivity implements NavigationV
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(ServiceAddActivity.this, QueryActivity.class));    // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case 2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceAddActivity.this, CustomerAddActivity.class));  // If a sort button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of reports
+            case 2131296410: //Numeric id of reports
                 startActivity(new Intent(ServiceAddActivity.this, CartesianChartActivity.class));   // If a sort button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(ServiceAddActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }

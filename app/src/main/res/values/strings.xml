@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MJM</string>
     <string name="services">SERVICES</string>
-    <string name="sort">SORT</string>
+    <string name="find">FIND</string>
     <string name="add">ADD</string>
     <string name="completed_services">COMPLETED\nSERVICES</string>
     <string name="all_services">SERVICES\nSUMMARY</string>

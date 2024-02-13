@@ -62,7 +62,6 @@
             android:layout_height="50dp"
             android:layout_marginTop="40dp"
             android:backgroundTint="@color/orange"
-
             android:text="Log in"
             android:textColor="@color/black"
             app:cornerRadius="15dp"
@@ -82,8 +81,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/imageView" />
-
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -111,7 +108,4 @@
         android:id="@+id/nav_view"
         android:layout_gravity="start"
         />
-
-
-
 </androidx.drawerlayout.widget.DrawerLayout>

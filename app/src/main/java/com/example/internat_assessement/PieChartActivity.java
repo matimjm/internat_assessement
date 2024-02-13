@@ -118,36 +118,28 @@ public class PieChartActivity extends AppCompatActivity implements NavigationVie
 
     }
     private class CustomDataEntry extends ValueDataEntry {  // Class created by me to input the data to the seriesData array
-
         CustomDataEntry(String x, Number value) { // The first parameter (x) is a name of a month e.g. ("February") and the second parameter is a number (value) of services completed in such month
             super(x, value);
-            //setValue("value2", value2);
-            //setValue("value3", value3);
         }
-
     }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(PieChartActivity.this, QueryActivity.class));  // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(PieChartActivity.this, CustomerAddActivity.class));    // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of completed services
+            case 2131296410: //Numeric id of completed services
                 startActivity(new Intent(PieChartActivity.this, CartesianChartActivity.class));   // If a completed button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(PieChartActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
-        /*TODO ADD A CLIENT QUERY (QUERY BY PHONE NUMBER OR EMAIL), IN A RECURRING CLIENTS LIST,
-         *  */
-        /*TODO ADD A DEVICE QUERY (QUERY BY IMEIOrSNum), IN A RECURRING DEVICES LIST,
-         *   */
         return true;    // Just casually returning true, because this method has to return a boolean
     }
 }

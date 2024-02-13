@@ -25,6 +25,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.time.LocalDate;
+
 public class ServiceDetailsActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     //toolbar stuff
@@ -49,7 +51,7 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
         setContentView(R.layout.activity_service_details);  // This line of code sets a ContentView (a layout file (activity_service_details) that will be used within the activity) for an activity we are in (ServiceDetailsActivity)
 
         //toolbar stuff
-       toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
+        toolbar = findViewById(R.id.main_toolbar);  // We are connecting the earlier defined object (toolbar) with a component of a layout file (each component has a specified ID ('main_toolbar')
         setSupportActionBar(toolbar);   // In this place we are setting the SupportActionBar passing the toolbar object to the method
         drawerLayout = findViewById(R.id.drawer_layout);    // We are connecting the earlier defined object (drawerLayout) with a component of a layout file (each component has a specified ID ('drawer_layout')
         navigationView = findViewById(R.id.nav_view);   // We are connecting the earlier defined object (navigationView) with a component of a layout file (each component has a specified ID ('nav_view')
@@ -82,7 +84,6 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
             String status_txt = extras.getString("uStatus");    // Assigning a uStatus, which is a status_txt of a service that a user has clicked on
             String serviceId_txt = extras.getString("uServiceId");  // Assigning a uServiceId, which is a serviceId_txt of a service that a user has clicked on
             String IMEIOrSNum = extras.getString("uIMEIOrSNum");    // Assigning a uIMEIOrSNum, which is a IMEIOrSNum of a device that has a service that a user has clicked on
-            String comingFrom = extras.getString("uComingFrom");    // Assigning a uComingFrom, which is a name of an activity that we are coming from, because later we have two options, depending on the page you are coming from
             longInfo.setText(longInfo_txt); // In this place we are setting the text of longInfo so that it is visible to the user
             currentStatus.setText(status_txt);  // In this place we are setting the text of currentStatus so that it is visible to the user
 
@@ -96,9 +97,24 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
                         @Override
                         public void onClick(View view) {    // If a button was clicked an equivalent code under this method is run
                             String status = statuses.getSelectedItem().toString();  // This line of code fetched the chosen by a user status that he wants to change the current status of a service to
-                            db.collection("Services")   // In here we are getting the instance of collection "Services"
-                                    .document(serviceId_txt)    // We are getting the access to the document with an id equal to serviceId_txt
-                                    .update("status",status);   // In this place we are not setting, but updating the field of status to a new status of a user's choice
+                            if (status.equals("completed")){
+                                LocalDate date = LocalDate.now();
+                                String[] dateList = date.toString().split("-");
+                                String year = dateList[0];  // This line of code fetches the numeric String with a current year
+                                String month = dateList[1]; // This line of code fetches the numeric String with a current month
+                                db.collection("Services")
+                                        .document(serviceId_txt)
+                                        .update("status",status);
+                                db.collection("Services")
+                                        .document(serviceId_txt)
+                                        .update("month_year",month+"_"+year);
+
+                            }else {
+                                db.collection("Services")   // In here we are getting the instance of collection "Services"
+                                        .document(serviceId_txt)    // We are getting the access to the document with an id equal to serviceId_txt
+                                        .update("status",status);   // In this place we are not setting, but updating the field of status to a new status of a user's choice
+                            }
+
 
                             Query query = db.collection("Devices")  // We are creating a query in order to later access the number of an owner of a serviced device
                                     .whereEqualTo("IMEIOrSNum",IMEIOrSNum); // In this place we are finding a device that is being currently serviced
@@ -157,16 +173,16 @@ public class ServiceDetailsActivity extends AppCompatActivity implements Navigat
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(ServiceDetailsActivity.this, QueryActivity.class));    // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceDetailsActivity.this, CustomerAddActivity.class));  // If a sort button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of reports
+            case 2131296410: //Numeric id of reports
                 startActivity(new Intent(ServiceDetailsActivity.this, CartesianChartActivity.class));   // If a sort button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(ServiceDetailsActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }

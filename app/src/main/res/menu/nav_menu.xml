@@ -3,12 +3,12 @@
 
     <item android:title="Hello user!">
         <menu>
-            <item android:title="@string/sort"
-                android:icon="@drawable/ic_action_search"
-                android:id="@+id/sortItem"/>
             <item android:title="@string/add"
                 android:icon="@drawable/ic_action_add"
                 android:id="@+id/addItem"/>
+            <item android:title="@string/find"
+                android:icon="@drawable/ic_action_search"
+                android:id="@+id/findItem"/>
             <item
                 android:id="@+id/completedServices"
                 android:icon="@drawable/ic_action_reports"

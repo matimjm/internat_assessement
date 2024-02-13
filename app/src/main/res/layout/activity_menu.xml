@@ -46,7 +46,7 @@
             android:layout_width="198dp"
             android:layout_height="100dp"
             android:backgroundTint="@color/orange"
-            android:text="Search"
+            android:text="Find"
             android:textSize="20dp"
             app:icon="@drawable/ic_action_search"
             app:iconTint="@color/black"

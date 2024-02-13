@@ -127,66 +127,62 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
                                                                         // and adds all of the results of a query (basically all of the clients in a database) to the clientArrayList in order to display it in the RecyclerView
                                                                         // It has two arguments one - String flag - which indicates us if a user has left any field open, and if so query through the one that was filled (if both were empty, do not query through anything - just show all clients)
         if (flag.equals("allEmpty")){
-            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                                return;
+            Query query = db.collection("Clients");
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()){
+                            Toast.makeText(RecurringCustomerActivity.this, "No clients in the database", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(RecurringCustomerActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();    // This Toast message notifies the user that the services were found successfully with the criteria he has specified
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                clientArrayList.add(document.toObject(Client.class));
                             }
-                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-                                if (dc.getType() == DocumentChange.Type.ADDED){ // Check to see if the type of the document change is DocumentChange.Type.ADDED.
-                                                                                // If it is, then the client object from the document is added to the clientArrayList.
-                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
-                                }
-                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
-                            }
+                            recCustomerAdapter.notifyDataSetChanged();
                         }
-                    }); // The closing bracket of .addSnapshotListener
+                    }
+                }
+            });
         }else if (flag.equals("nameEmpty")){
-            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .whereEqualTo("surname",surname)
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                                return;
+            Query query = db.collection("Clients")
+                    .whereEqualTo("surname",surname);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()){
+                            Toast.makeText(RecurringCustomerActivity.this, "No clients with such surname", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(RecurringCustomerActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();    // This Toast message notifies the user that the services were found successfully with the criteria he has specified
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                clientArrayList.add(document.toObject(Client.class));
                             }
-                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
-                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
-                                }
-                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
-                            }
+                            recCustomerAdapter.notifyDataSetChanged();
                         }
-                    }); // The closing bracket of .addSnapshotListener
+                    }
+                }
+            });
         }
         else if (flag.equals("surnameEmpty")){
-            db.collection("Clients")    // We are creating the instance of a collection "Clients", there will be no more steps, because we want all the clients to be returned as QuerySnapshot
-                    .whereEqualTo("name",name)
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (clients) belonging to the collection "Clients"
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                                Toast.makeText(RecurringCustomerActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                                return;
+            Query query = db.collection("Clients")
+                    .whereEqualTo("name",name);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()){
+                            Toast.makeText(RecurringCustomerActivity.this, "No clients with such surname", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(RecurringCustomerActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();    // This Toast message notifies the user that the services were found successfully with the criteria he has specified
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                clientArrayList.add(document.toObject(Client.class));
                             }
-                            for (DocumentChange dc : value.getDocumentChanges()){   // This for-each loop iterates over the QuerySnapshot value which holds all of the clients in a document form
-                                if (dc.getType() == DocumentChange.Type.ADDED){ // This if prevents the duplicates of clients added to the clientArrayList
-                                    clientArrayList.add(dc.getDocument().toObject(Client.class));   // This line of code adds an iterated from a loop client in an object (Client) form to the clientArrayList
-                                }
-                                recCustomerAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recCustomerAdapter)
-                            }
+                            recCustomerAdapter.notifyDataSetChanged();
                         }
-                    }); // The closing bracket of .addSnapshotListener
+                    }
+                }
+            });
         }
         else if (flag.equals("noEmpty")){
             System.out.println(name);
@@ -220,16 +216,16 @@ public class RecurringCustomerActivity extends AppCompatActivity implements Navi
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(RecurringCustomerActivity.this, QueryActivity.class)); // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(RecurringCustomerActivity.this, CustomerAddActivity.class));   // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of reports
+            case 2131296410: //Numeric id of reports
                 startActivity(new Intent(RecurringCustomerActivity.this, CartesianChartActivity.class));  // If a reports button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(RecurringCustomerActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }

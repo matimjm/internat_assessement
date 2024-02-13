@@ -148,30 +148,24 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                                                         // this statement is done in order to display only devices belonging to the client that a user has chosen or that has just been created,
                                                         // and adds all of the results of a query (the devices owned by a client) to the deviceArrayList in order to display it in the RecyclerView
         if (flag.equals("allEmpty")){
-            db.collection("Devices")    // We are creating the instance of a collection "Devices"
-                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (devices) belonging to the collection "Devices",
-                        // and later create an if statement in order to filter the only devices belonging to a client wanted by a user
-                        @Override
-                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                                Toast.makeText(RecurringDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                                return;
+            Query query = db.collection("Devices")
+                    .whereEqualTo("clientId",clientId);
+            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        if (task.getResult().isEmpty()){
+                            Toast.makeText(RecurringDeviceActivity.this, "The client has no devices", Toast.LENGTH_SHORT).show();
+                        }else {
+                            Toast.makeText(RecurringDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                deviceArrayList.add(document.toObject(Device.class));
                             }
-
-                            for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the devices in a document form
-                                if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of devices added to the deviceArrayList
-                                    if (dc.getDocument().getString("clientId").equals(clientId)){      // This if is the most important line of this method,
-                                        // because it filters the devices so that only devices belonging to a client (having the same clientId as a client),
-                                        // wanted by a user are displayed
-                                        deviceArrayList.add(dc.getDocument().toObject(Device.class));   // This line of code adds an iterated from a loop and filtered by an if device in an object (Device) form to the deviceArrayList
-                                    }
-                                }
-                                recDeviceAdapter.notifyDataSetChanged();    // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recDeviceAdapter)
-                            }
+                            recDeviceAdapter.notifyDataSetChanged();
                         }
-                    });
+                    }
+                }
+            });
         }else if (flag.equals("modelEmpty")){
             db.collection("Brands")
                     .whereEqualTo("brandName", brandName)
@@ -196,32 +190,25 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                                                             for (QueryDocumentSnapshot documentSnapshot1 : task.getResult()) {
                                                                 modelsList.add(documentSnapshot1.getString("modelId"));
                                                             }
-                                                            db.collection("Devices")    // We are creating the instance of a collection "Devices"
+                                                            Query query = db.collection("Devices")
                                                                     .whereIn("modelId",modelsList)
-                                                                    .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (devices) belonging to the collection "Devices",
-                                                                        // and later create an if statement in order to filter the only devices belonging to a client wanted by a user
-                                                                        @Override
-                                                                        public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                                                                            if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                                                                                Toast.makeText(RecurringDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                                                                                Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                                                                                return;
+                                                                    .whereEqualTo("clientId",clientId);
+                                                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                @Override
+                                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    if (task.isSuccessful()) {
+                                                                        if (task.getResult().isEmpty()){
+                                                                            Toast.makeText(RecurringDeviceActivity.this, "The client has no devices with such brand", Toast.LENGTH_SHORT).show();
+                                                                        }else {
+                                                                            Toast.makeText(RecurringDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
+                                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                                deviceArrayList.add(document.toObject(Device.class));
                                                                             }
-
-                                                                            for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the devices in a document form
-                                                                                if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of devices added to the deviceArrayList
-                                                                                    if (dc.getDocument().getString("clientId").equals(clientId)){      // This if is the most important line of this method,
-                                                                                        // because it filters the devices so that only devices belonging to a client (having the same clientId as a client),
-                                                                                        // wanted by a user are displayed
-                                                                                        deviceArrayList.add(dc.getDocument().toObject(Device.class));   // This line of code adds an iterated from a loop and filtered by an if device in an object (Device) form to the deviceArrayList
-                                                                                    }
-                                                                                }
-                                                                                recDeviceAdapter.notifyDataSetChanged();    // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a recDeviceAdapter)
-                                                                            }
+                                                                            recDeviceAdapter.notifyDataSetChanged();
                                                                         }
-                                                                    });
-
+                                                                    }
+                                                                }
+                                                            });
                                                         }
                                                     }
                                                 }
@@ -240,29 +227,25 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                     if (task.isSuccessful()){
                         for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                             String modelId = documentSnapshot.getString("modelId");
-                            db.collection("Devices")
+                            Query query = db.collection("Devices")
                                     .whereEqualTo("modelId",modelId)
-                                    .get()
-                                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                if (task.getResult().isEmpty()) {
-                                                    Toast.makeText(RecurringDeviceActivity.this, "No devices with such criteria", Toast.LENGTH_SHORT).show();
-                                                }else {
-                                                    Toast.makeText(RecurringDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
-                                                    for (QueryDocumentSnapshot documentSnapshot1 : task.getResult()) {
-                                                        if (documentSnapshot1.getString("clientId").equals(clientId)){
-                                                            deviceArrayList.add(documentSnapshot1.toObject(Device.class));
-                                                            recDeviceAdapter.notifyDataSetChanged();
-                                                        }
-
-                                                    }
-
-                                                }
+                                    .whereEqualTo("clientId",clientId);
+                            query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        if (task.getResult().isEmpty()){
+                                            Toast.makeText(RecurringDeviceActivity.this, "The client has no devices with such model", Toast.LENGTH_SHORT).show();
+                                        }else {
+                                            Toast.makeText(RecurringDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                deviceArrayList.add(document.toObject(Device.class));
                                             }
+                                            recDeviceAdapter.notifyDataSetChanged();
                                         }
-                                    });
+                                    }
+                                }
+                            });
                         }
                     }
                 }
@@ -276,16 +259,16 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(RecurringDeviceActivity.this, QueryActivity.class)); // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(RecurringDeviceActivity.this, CustomerAddActivity.class));   // If an add button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of reports
+            case 2131296410: //Numeric id of reports
                 startActivity(new Intent(RecurringDeviceActivity.this, CartesianChartActivity.class));  // If a reports button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(RecurringDeviceActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
@@ -305,7 +288,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                         if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no brands)
                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
                                 String brandId = documentSnapshot.getString("brandId");
-                                List<String> Models = new ArrayList<>();    // An ArrayList Brands is created in order to hold all of the brands fetched from the database,
+                                List<String> Models = new ArrayList<>();    // An ArrayList Models is created in order to hold all of the models fetched from the database,
                                 // in order to later display them to choose from in a spinnerBrands
                                 Models.add("none");
                                 ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_item, Models);  // An ArrayAdapter is created in this line in order to connect the spinnerBrands with the Brands (ArrayList),
@@ -335,9 +318,7 @@ public class RecurringDeviceActivity extends AppCompatActivity implements Naviga
                     }
                 });
     }
-
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
-
     }
 }

@@ -64,7 +64,6 @@
             android:text="Sort by"
             app:layout_constraintBottom_toTopOf="@+id/spinnerMainSort"
             app:layout_constraintEnd_toEndOf="@+id/spinnerMainSort" />
-
         <Spinner
             android:id="@+id/spinnerMainSort"
             android:layout_width="190dp"

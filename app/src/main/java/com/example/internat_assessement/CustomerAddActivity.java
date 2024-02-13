@@ -83,7 +83,7 @@ public class CustomerAddActivity extends AppCompatActivity implements Navigation
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         System.out.println(id);
         switch (id) {
-            case 2131296699: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(CustomerAddActivity.this, QueryActivity.class));   // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add

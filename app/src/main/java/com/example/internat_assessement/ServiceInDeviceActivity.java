@@ -15,11 +15,14 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -91,29 +94,25 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
                                                             // the query has one statement - a IMEIOrSNum of a service must be equal to a IMEIOrSNum of a device that a user has chosen or that has just been created,
                                                             // this statement is done in order to display only services belonging to the device that a user has chosen or that has just been created,
                                                             // and adds all of the results of a query (the services belonging to a device) to the serviceArrayList in order to display it in the RecyclerView
-
-        db.collection("Services")   // We are creating the instance of a collection "Devices"
-                .addSnapshotListener(new EventListener<QuerySnapshot>() {   // We are adding the SnapshotListener in order to find all of the documents (services) belonging to the collection "Services",
-                                                                            // and later create an if statement in order to filter the only services belonging to a device wanted by a user (having the same IMEIOrSNum)
+        db.collection("Services")
+                .whereEqualTo("IMEIOrSNum",IMEIOrSNum)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
-                    public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
-
-                        if (error != null){ // In case of some error (usually this error occurs when the internet connection is lost) the equivalent code is executed
-                            Toast.makeText(ServiceInDeviceActivity.this, "Firestore error: "+error.getMessage(), Toast.LENGTH_SHORT).show();  // The information is shown to the user that something went wrong
-                            Log.e("Firestore error", error.getMessage());   // The information in a logcat is shown for development process, helps a person that will maintain the application
-                            return;
-                        }
-
-                        for (DocumentChange dc : value.getDocumentChanges()) {  // This for-each loop iterates over the QuerySnapshot value which holds all of the services in a document form
-                            if (dc.getType() == DocumentChange.Type.ADDED) {    // This if prevents the duplicates of services added to the serviceArrayList
-                                if (dc.getDocument().getString("IMEIOrSNum").equals(IMEIOrSNum)){   // This if is the most important line of this method,
-                                                                                                         // because it filters the services so that only services belonging to a device (having the same IMEIOrSNum as a device),
-                                                                                                         // wanted by a user are displayed
-                                    serviceArrayList.add(dc.getDocument().toObject(Service.class)); // In this line of code we are adding the services (in a Service object form) that we want to display in the RecyclerView to the serviceArrayList
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            if (task.getResult().isEmpty()){
+                                Toast.makeText(ServiceInDeviceActivity.this, "There are not services in this device", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(ServiceInDeviceActivity.this, "Successfully found", Toast.LENGTH_SHORT).show();
+                                for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                                    serviceArrayList.add(documentSnapshot.toObject(Service.class));
                                 }
+                                serviceInDeviceAdapter.notifyDataSetChanged();
                             }
-                            serviceInDeviceAdapter.notifyDataSetChanged();  // This line of code is needed to notify that the dataset has changed (in other words it works like a refresher for a serviceInDeviceAdapter)
+
                         }
+
                     }
                 });
     }
@@ -122,16 +121,16 @@ public class ServiceInDeviceActivity extends AppCompatActivity implements Naviga
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
         int id = item.getItemId();  // We are getting the id of an item in order to later identify which one of them was clicked
         switch (id) {
-            case 2131296694: //Numeric id of sort
+            case 2131296489: //Numeric id of sort
                 startActivity(new Intent(ServiceInDeviceActivity.this, QueryActivity.class));   // If a sort button was clicked you are redirected to the QueryActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
             case  2131296327: //Numeric id of add
                 startActivity(new Intent(ServiceInDeviceActivity.this, CustomerAddActivity.class)); // If a sort button was clicked you are redirected to the CustomerAddActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296821: //Numeric id of reports
+            case 2131296410: //Numeric id of reports
                 startActivity(new Intent(ServiceInDeviceActivity.this, CartesianChartActivity.class));  // If a sort button was clicked you are redirected to the CartesianChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
-            case 2131296820: //Numeric id of all services
+            case 2131296333: //Numeric id of all services
                 startActivity(new Intent(ServiceInDeviceActivity.this, PieChartActivity.class));   // If a all button was clicked you are redirected to the PieChartActivity
                 break;  // Break is needed so that when a back arrow is clicked it does not redirect us to the activity we were earlier in (we want the user to navigate by the toolbar and not by the back arrow)
         }
