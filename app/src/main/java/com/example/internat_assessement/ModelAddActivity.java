@@ -7,6 +7,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.content.Intent;
+import android.graphics.ColorSpace;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -112,9 +113,10 @@ public class ModelAddActivity extends AppCompatActivity implements NavigationVie
                 public void onClick(View view) {    // If a button was clicked an equivalent code under this method is run
 
                     String modelName_txt = modelName.getText().toString();  // We are fetching the name of a model that a user has typed into the modelName EditText field into a String modelName_txt
+                    String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
 
                     if (!modelName_txt.isEmpty()) {
-                        String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
+
 
                         HashMap<String,Object> model = new HashMap<>(); // A HashMap<String,Object> model is created in order to later pass it to set a new model in a collection "Models"
 
@@ -159,6 +161,14 @@ public class ModelAddActivity extends AppCompatActivity implements NavigationVie
                 }
             });
         }
+    }
+
+    public static boolean validationRulesModel(String model, String brand){ // this function checks whether the inputted model by the user has a valid format
+        // validations here in this regex formula:
+        // 1. cannot be the same as other model in a brand
+
+        System.out.println(name.matches(regex) + "name\n");
+        return name.matches(regex);
     }
 
     @Override
