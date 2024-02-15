@@ -66,10 +66,12 @@ public class LoginActivity extends AppCompatActivity {     // At this moment we 
     private void loginUser(String username, String password){  // This method is mainly based on logging the user to the app,
                                                                 // it takes two arguments (String username, String password),
                                                                 // which are basically the credentials the user has inputted into the fields
+
         auth.signInWithEmailAndPassword(username,password).addOnSuccessListener(new OnSuccessListener<AuthResult>() {   // this line of code signs up the user and adds the OnSuccessListener -
                                                                                                                         // - it is a listener that checks whether the username and the password are valid
         @Override
         public void onSuccess(AuthResult authResult) {    // If the OnSuccessListener returns a success it means that the user has inputted the valid username and password
+
             Toast.makeText(LoginActivity.this, "Login Successful!", Toast.LENGTH_SHORT).show();  // a proper Toast message is shown in order to inform the user that he has been logged successfully
             startActivity(new Intent(LoginActivity.this, MenuActivity.class));  // After logging in a user is redirected into another activity (MenuActivity) from which he can start using the app
             finish();

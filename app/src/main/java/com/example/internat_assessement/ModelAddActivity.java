@@ -22,6 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -36,6 +37,9 @@ public class ModelAddActivity extends AppCompatActivity implements NavigationVie
     private DrawerLayout drawerLayout;  // Initializing the object drawerLayout (DrawerLayout), which draws the Toolbar in every activity
     private NavigationView navigationView;  // Initializing the object navigationView (NavigationView), this object contains the items of our toolbar and is used to check if any of them was clicked
 
+    ArrayList<String> modelNamesList; // it is used to later store names of models in validation function
+
+    boolean matches = true; // this is used in validation method to return the valid information
 
     EditText modelName;
     Spinner spinnerBrands;
@@ -112,64 +116,100 @@ public class ModelAddActivity extends AppCompatActivity implements NavigationVie
                 @Override
                 public void onClick(View view) {    // If a button was clicked an equivalent code under this method is run
 
+
                     String modelName_txt = modelName.getText().toString();  // We are fetching the name of a model that a user has typed into the modelName EditText field into a String modelName_txt
                     String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
 
-                    if (!modelName_txt.isEmpty()) {
+                        System.out.println(modelName_txt + " model typed");
+                        Query query = db.collection("Brands")
+                                .whereEqualTo("brandName",brandName);
+                        query.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
+                                String brandId;
+                                matches = true;
+                                String modelName_txt = modelName.getText().toString();  // We are fetching the name of a model that a user has typed into the modelName EditText field into a String modelName_txt
+                                String brandName = spinnerBrands.getSelectedItem().toString();  // We are fetching the name of a brand that a user has chosen in a spinnerBrands into a String brandName
+                                if (task.isSuccessful()) {
+                                    if (task.getResult().isEmpty()){
+                                        Toast.makeText(ModelAddActivity.this, "The brand was not found", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        for (QueryDocumentSnapshot document : task.getResult()) {
+                                            brandId = document.toObject(Brand.class).getBrandId();
+                                            Query query1 = db.collection("Models")
+                                                    .whereEqualTo("brandId",brandId);
+                                            query1.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
 
-                        HashMap<String,Object> model = new HashMap<>(); // A HashMap<String,Object> model is created in order to later pass it to set a new model in a collection "Models"
-
-                        db.collection("Brands") // In here we are getting the instance of collection "Brands"
-                                .whereEqualTo("brandName",brandName)    // This line of code is a filter of a query - it only lets a brand with a name equal to brandName
-                                .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // This OnCompleteListener is constantly checking if a process of getting the instance of the collection "Brands" (with a query filter applied) was completed
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
-                                        if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
-                                            for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
-                                                // a loop has only one round because there is only one result of a query, because each brand has a unique name
-
-                                                String brandId = documentSnapshot.getString("brandId"); // This line of code fetches the id of a brand from a document currently iterated in a loop
-
-                                                String modelId = db.collection("Models").document().getId();    // This line of code generates a document ID without creating the actual document in a Firebase Firestore
-
-                                                model.put("brandId", brandId);  // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
-                                                model.put("modelName",modelName_txt);   // This line inputs the data (key = "modelName" (it is a name of a field in a Firestore), value = modelName_txt) into the HashMap
-                                                model.put("modelId",modelId);   // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
-
-                                                db.collection("Models") // In here we are getting the instance of collection "Models"
-                                                        .document(modelId)  // This line of code creates a document in a collection "Models" with an earlier randomly generated Id
-                                                        .set(model) // In here we are setting the fields of a newly added model
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {   // This OnSuccessListener is constantly checking if a process of adding a new model and setting its fields was a success
-                                                            @Override
-                                                            public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
-                                                                Intent intent = new Intent(ModelAddActivity.this, NewDeviceActivity.class); // An Intent is created in order to later redirect the user to the NewDeviceActivity (to add the brand a user is lacking)
-                                                                intent.putExtra("uClientId", clientId); // As an Extra we are passing a clientId in order to later be able to display only devices belonging to a specific client
-
-                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
-                                                                startActivity(intent);  // In this case we are enabling the Intent to work
+                                                    if (task.isSuccessful()) {
+                                                        if (task.getResult().isEmpty()) {
+                                                            Toast.makeText(ModelAddActivity.this, "The model was not found", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            int length = 0; // it is used later to display the amount of models in one brand in the validation function
+                                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                                if (document.toObject(Model.class).getModelName().equals(modelName_txt)) {
+                                                                    System.out.println(document.toObject(Model.class).getModelName() + " model found");
+                                                                    matches = false;
+                                                                }
                                                             }
-                                                        });
+                                                            if (matches){
+                                                                HashMap<String,Object> model = new HashMap<>(); // A HashMap<String,Object> model is created in order to later pass it to set a new model in a collection "Models"
 
-                                            }
+                                                                db.collection("Brands") // In here we are getting the instance of collection "Brands"
+                                                                        .whereEqualTo("brandName",brandName)    // This line of code is a filter of a query - it only lets a brand with a name equal to brandName
+                                                                        .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {  // This OnCompleteListener is constantly checking if a process of getting the instance of the collection "Brands" (with a query filter applied) was completed
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<QuerySnapshot> task) { // If a process of completion was completed the code under this method is run
+                                                                                if (task.isSuccessful()) {  // In here we are checking if a task is successful (the only time it can be unsuccessful is when e.g. the Internet connection is lost or there are no models)
+                                                                                    for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {   // This is a for-each loop which iterates over all of the brands in a Firestore database,
+                                                                                        // a loop has only one round because there is only one result of a query, because each brand has a unique name
+
+                                                                                        String brandId = documentSnapshot.getString("brandId"); // This line of code fetches the id of a brand from a document currently iterated in a loop
+
+                                                                                        String modelId = db.collection("Models").document().getId();    // This line of code generates a document ID without creating the actual document in a Firebase Firestore
+
+                                                                                        model.put("brandId", brandId);  // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
+                                                                                        model.put("modelName",modelName_txt);   // This line inputs the data (key = "modelName" (it is a name of a field in a Firestore), value = modelName_txt) into the HashMap
+                                                                                        model.put("modelId",modelId);   // This line inputs the data (key = "modelId" (it is a name of a field in a Firestore), value = modelId) into the HashMap
+
+                                                                                        db.collection("Models") // In here we are getting the instance of collection "Models"
+                                                                                                .document(modelId)  // This line of code creates a document in a collection "Models" with an earlier randomly generated Id
+                                                                                                .set(model) // In here we are setting the fields of a newly added model
+                                                                                                .addOnSuccessListener(new OnSuccessListener<Void>() {   // This OnSuccessListener is constantly checking if a process of adding a new model and setting its fields was a success
+                                                                                                    @Override
+                                                                                                    public void onSuccess(Void unused) {    // If a success is achieved the equivalent code under this method is run
+                                                                                                        Intent intent = new Intent(ModelAddActivity.this, NewDeviceActivity.class); // An Intent is created in order to later redirect the user to the NewDeviceActivity (to add the brand a user is lacking)
+                                                                                                        intent.putExtra("uClientId", clientId); // As an Extra we are passing a clientId in order to later be able to display only devices belonging to a specific client
+
+                                                                                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                                                                                        startActivity(intent);  // In this case we are enabling the Intent to work
+                                                                                                    }
+                                                                                                });
+
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        });
+                                                            }else {
+                                                                Toast.makeText(ModelAddActivity.this, "This model already exists", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            });
                                         }
                                     }
-                                });
-                    }else {
-                        Toast.makeText(ModelAddActivity.this, "Model name cannot be empty!", Toast.LENGTH_SHORT).show();
-                    }
+                                }
+                            }
+                        });
                 }
             });
         }
     }
 
-    public static boolean validationRulesModel(String model, String brand){ // this function checks whether the inputted model by the user has a valid format
-        // validations here in this regex formula:
-        // 1. cannot be the same as other model in a brand
 
-        System.out.println(name.matches(regex) + "name\n");
-        return name.matches(regex);
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {   // This is a method in which we define which button on the toolbar directs to which activity
