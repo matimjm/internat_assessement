@@ -14,9 +14,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.HashMap;
 
@@ -27,6 +32,8 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
 
         private DrawerLayout drawerLayout;  // Initializing the object drawerLayout (DrawerLayout), which draws the Toolbar in every activity
         private NavigationView navigationView;  // Initializing the object navigationView (NavigationView), this object contains the items of our toolbar and is used to check if any of them was clicked
+
+    boolean matches = true; // this is used in validation to return the valid information
 
     Button newBrandAdd; // Initializing the object newBrandAdd (Button), it is a component of a layout file, on which a user can click and add the brand with a name the user has typed in
     EditText brandName; // Initializing the object brandName (EditText), it is a component of a layout file, on which a user can enter a text (a name of a brand he wants to add)
@@ -69,32 +76,56 @@ public class BrandAddActivity extends AppCompatActivity implements NavigationVie
                 public void onClick(View view) {    // If a button was clicked the code under this method is executed
 
                     String brandName_txt = brandName.getText().toString();  // This line of code fetches the email as String into email_txt String that the user has inputted in an email EditText field
-                    if (!brandName_txt.isEmpty()) {
-                        String brandId = db.collection("Brands").document().getId();    // // This line of code generates a document ID without creating the actual document in a Firebase Firestore
+                    System.out.println(brandName_txt + " brand typed");
+                    db.collection("Brands")
+                            .get()
+                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    matches = true;
+                                    String brandName_txt = brandName.getText().toString();  // This line of code fetches the email as String into email_txt String that the user has inputted in an email EditText field
+                                    if (!brandName_txt.isEmpty()){
+                                        if (task.isSuccessful()){
+                                            for (QueryDocumentSnapshot documentSnapshot: task.getResult()){
+                                                if (documentSnapshot.toObject(Brand.class).getBrandName().equals(brandName_txt)){
+                                                    System.out.println(documentSnapshot.toObject(Brand.class).getBrandName() + " brand found");
+                                                    matches = false;
+                                                }
+                                            }
+                                            if (matches){
+                                                String brandId = db.collection("Brands").document().getId();    // // This line of code generates a document ID without creating the actual document in a Firebase Firestore
 
-                        HashMap<String,Object> brand = new HashMap<>();     // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new brand in a collection "Brands"
+                                                HashMap<String,Object> brand = new HashMap<>();     // This is an initialization of a HashMap which is needed in order to input data to it to later pass it to set a new brand in a collection "Brands"
 
-                        brand.put("brandId",brandId);   // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
-                        brand.put("brandName",brandName_txt);   // This line inputs the data (key = "brandName" (it is a name of a field in a Firestore), value = brandName_txt) into the HashMap
+                                                brand.put("brandId",brandId);   // This line inputs the data (key = "brandId" (it is a name of a field in a Firestore), value = brandId) into the HashMap
+                                                brand.put("brandName",brandName_txt);   // This line inputs the data (key = "brandName" (it is a name of a field in a Firestore), value = brandName_txt) into the HashMap
 
-                        db.collection("Brands") // In here we are getting the instance of collection "Brands"
-                                .document(brandId)  // We are accessing the document with a name of clientId
-                                .set(brand) // We are setting the HashMap as a data of a document we have accessed in a line before
-                                .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
-                                    // once it was finished and a success was returned we are running equivalent code
-                                    @Override
-                                    public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
-                                        Intent intent = new Intent(BrandAddActivity.this, ModelAddActivity.class);  // An Intent is created in order to later redirect the user to the ModelAddActivity (to add the device model to the newly created brand)
-                                        intent.putExtra("uClientId", clientId);     // With an Intent we can pass variables, so we are passing the "uClientId"
-                                        // in order to later in ModelAddActivity pass it then to DeviceAddActivity in order to still show the devices belonging to a client earlier specified by a user
+                                                db.collection("Brands") // In here we are getting the instance of collection "Brands"
+                                                        .document(brandId)  // We are accessing the document with a name of clientId
+                                                        .set(brand) // We are setting the HashMap as a data of a document we have accessed in a line before
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {   // The OnSuccessListener is added in order to listen when the adding process was finished,
+                                                            // once it was finished and a success was returned we are running equivalent code
+                                                            @Override
+                                                            public void onSuccess(Void unused) {    // Once a success was returned the code under this method is run
+                                                                Toast.makeText(BrandAddActivity.this, "The brand was added successfully", Toast.LENGTH_SHORT).show();
+                                                                Intent intent = new Intent(BrandAddActivity.this, ModelAddActivity.class);  // An Intent is created in order to later redirect the user to the ModelAddActivity (to add the device model to the newly created brand)
+                                                                intent.putExtra("uClientId", clientId);     // With an Intent we can pass variables, so we are passing the "uClientId"
+                                                                // in order to later in ModelAddActivity pass it then to DeviceAddActivity in order to still show the devices belonging to a client earlier specified by a user
 
-                                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
-                                        startActivity(intent);  // In this case we are enabling the Intent to work
+                                                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // This is needed so that we can pass extras to the Intent and not only jump from one Activity to another
+                                                                startActivity(intent);  // In this case we are enabling the Intent to work
+                                                            }
+                                                        });
+                                            } else{
+                                                Toast.makeText(BrandAddActivity.this, "The brand already exists", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                    } else {
+                                        Toast.makeText(BrandAddActivity.this, "Brand field cannot be empty", Toast.LENGTH_SHORT).show();
                                     }
-                                });
-                    }else {
-                        Toast.makeText(BrandAddActivity.this, "Brand name can't be empty!", Toast.LENGTH_SHORT).show();
-                    }
+
+                                }
+                            });
                 }
             });
 
